@@ -397,8 +397,8 @@ function updateUpgrades(){
 		ui.show(("#P" + elem.id), elem.owned);
         
         if (elem.owned) {
-            if (elem.subType == "pantheon") { ui.show(("#purchasedUpgradesGroup"), true); }
-            else { ui.show(("#pantheonUpgrades"), true); }
+            if (elem.subType == "pantheon") { ui.show(("#pantheonUpgrades"), true); }
+            else { ui.show(("#purchasedUpgradesGroup"), true); }
         }
 	});
 

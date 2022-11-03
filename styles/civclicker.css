@@ -150,10 +150,8 @@ button {
 	button:active, button:active:hover {
 		background-color: rgba(200,255,180,0.9);
 	}
-#populationCreate button {
-	min-width: 3em;
-	padding-left: 0.5em; padding-right: 0.5em;
-}
+    
+
 #upgrades button {
 	min-width: 10em;
 }
