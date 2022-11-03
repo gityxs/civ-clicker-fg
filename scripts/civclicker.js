@@ -1035,7 +1035,7 @@ function doStarve() {
 		//xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
 		numberStarve = starve(Math.ceil(population.living/1000));
 		if (numberStarve == 1) { 
-			gameLog("A citizen starved to death"); 
+			gameLog("A worker starved to death"); 
 		} else if (numberStarve > 1) { 
 			gameLog(prettify(numberStarve) + " citizens starved to death"); 
 		}
@@ -1477,7 +1477,7 @@ function startTrader(){
 
 function trade(){
 	//check we have enough of the right type of resources to trade
-	if (!curCiv.trader.materialId || (curCiv.trader.materialId.owned < curCiv.trader.requested)) {
+	if (!curCiv.trader.materialId || (civData[curCiv.trader.materialId].owned < curCiv.trader.requested)) {
 		gameLog("Not enough resources to trade.");
 		return;
 	}
@@ -2033,7 +2033,7 @@ function load (loadType) {
 		}
 
 		//notify user
-		gameLog("Loaded saved game from localStorage");
+		gameLog("Loaded saved game from local storage");
 	}
 	
 	if (loadType === "import") {

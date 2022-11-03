@@ -482,8 +482,9 @@ function addAchievementRows()
 		s += (''
             + '<div id="' + elem.id + '" class="col-12">'
                 + '<div class="row gx-2 align-items-center" style="height:25px;">'
-                    + '<div class="col">' + elem.getQtyName() + '</div>'
-                    + '<div class="col-auto"><i class="fas fa-fw fa-check text-success"></i></div>'
+                    + '<div class="col"><strong>' + elem.getQtyName() + '</strong></div>'
+                    + '<div class="col-auto">' + elem.effectText + '</div>'
+                    + '<div class="col-auto"><i class="fas fa-fw fa-check-circle text-success"></i></div>'
                 + '</div>'
             + '</div>')
 	})

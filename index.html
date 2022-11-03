@@ -18,6 +18,7 @@
         <script src="scripts/eec3c710b7.js"></script>
         <!-- -->
         <script src="scripts/jsutils.js"></script>
+        <script src="scripts/ajax.js"></script>
         <script src="scripts/ui.js"></script>
         <!-- -->
         <script src="scripts/civclicker-classes.js" defer="defer"></script>
@@ -36,6 +37,12 @@
                         <div class="col ff-suezOne">
                             <h3 class="mb-0"><span id="civType">Thorp</span> of <span id="civName">Freddec Games</span></h3>
                             <div id="ruler">Ruled by <span id="rulerName">Freddec</span></div>
+                        </div>
+                        <!-- -->
+                        <div id="newRelease" class="col-auto" style="display:none;">
+                            <button onClick="window.location.reload();">
+                                New Release<br>Published
+                            </button>
                         </div>
                         <!-- -->
                         <div class="col-auto">
@@ -725,6 +732,22 @@
             function gtag(){ dataLayer.push(arguments) }
             gtag('js', new Date())
             gtag('config', 'G-L7KZTWGS9B')
+        </script>
+        <!-- -->
+        <script>
+            function checkVersion() {
+                
+                let currentTagName = "0.003"
+                ajax.get("https://api.github.com/repos/freddecgames/civclickerbyfg/releases/latest", function(responseText, response) {
+                
+                    let latestTagName = response.tag_name
+                    if (latestTagName != currentTagName) {
+                        ui.show("#newRelease", true)
+                    }
+                })
+            }
+            checkVersion()
+            setInterval(checkVersion, 15 * 60 * 1000)
         </script>
     </body>
 </html>

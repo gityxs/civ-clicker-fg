@@ -45,27 +45,27 @@ function getCivData () {
 		require: undefined,  // Cannot be purchased.
 		vulnerable:false, // Cannot be stolen
 		initOwned:1000,  
-		effectText:"Conquer more from your neighbors." }),
+		effectText:"Conquer more lands from your neighbors." }),
 	new Building({ 
 		id:"tent", singular:"tent", plural:"tents",
 		require: { wood:2, skins:2 },
-		effectText:"+1 max pop." }),
+		effectText:"+1 max Worker" }),
 	new Building({ 
 		id:"hut", singular:"wooden hut", plural:"wooden huts",
 		require : { wood:20, skins:1 },
-		effectText:"+3 max pop." }),
+		effectText:"+3 max Worker" }),
 	new Building({ 
 		id:"cottage", singular:"cottage", plural:"cottages",
 		prereqs:{ masonry: true },
 		require:{ wood:10, stone:30 },
-		effectText:"+6 max pop." }),
+		effectText:"+6 max Worker" }),
 	new Building({ 
 		id:"house", singular:"house", plural:"houses",
 		prereqs:{ construction: true },
 		require:{ wood:30, stone:70 },
 		get effectText() { 
 			var maxPop = 10 + 2*(civData.slums.owned + civData.tenements.owned); 
-			return "+" + maxPop + " max pop."; 
+			return "+" + maxPop + " max Worker"; 
 		},
 		set effectText(value) { return this.require; }, // Only here for JSLint.
 	}),
@@ -73,46 +73,46 @@ function getCivData () {
 		id: "mansion", singular:"mansion", plural:"mansions",
 		prereqs:{ architecture: true },
 		require:{ wood:200, stone:200, leather:20 },
-		effectText:"+50 max pop." }),
+		effectText:"+50 max Worker" }),
 	new Building({ 
 		id: "barn", singular:"barn", plural:"barns",
 		require:{ wood: 100 },
 		get effectText() {
 			var barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
-			return "+" + barnBonus + " food storage"; 
+			return "+" + barnBonus + " Food storage"; 
 		},
 		set effectText(value) { return this.effectText; },
 	}),
 	new Building({ 
 		id: "woodstock", singular:"wood stockpile", plural:"wood stockpiles",
 		require:{ wood:100 },
-		effectText: "+200 wood storage" 
+		effectText: "+200 Wood storage" 
 	}),
 	new Building({ 
 		id: "stonestock", singular:"stone stockpile", plural:"stone stockpiles",
 		require:{ wood:100 },
-		effectText: "+200 stone storage" 
+		effectText: "+200 Stone storage" 
 	}),
 	new Building({ 
 		id: "tannery", singular:"tannery", plural:"tanneries",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:70, skins:2 },
-		effectText:"allows 1 tanner" }),
+		effectText:"Allows 1 Tanner" }),
 	new Building({ 
 		id: "smithy", singular:"smithy", plural:"smithies",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:70, ore:2 },
-		effectText:"allows 1 blacksmith" }),
+		effectText:"Allows 1 Blacksmith" }),
 	new Building({ 
 		id: "apothecary", singular:"apothecary", plural:"apothecaries",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:70, herbs:2 },
-		effectText:"allows 1 healer" }),
+		effectText:"Allows 1 Healer" }),
 	new Building({ 
 		id:"temple", singular:"temple", plural:"temples",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:120 },
-		effectText:"allows 1 cleric",
+		effectText:"Allows 1 Cleric",
 		// If purchase was a temple and aesthetics has been activated, increase morale
 		// If population is large, temples have less effect.
 		onGain: function(num) { 
@@ -125,18 +125,18 @@ function getCivData () {
 		id: "barracks", name: "barracks",
 		prereqs:{ masonry: true },
 		require:{ food:20, wood:60, stone:120, metal:10 },
-		effectText:"allows 10 soldiers" }),
+		effectText:"Allows 10 Soldiers" }),
 	new Building({ 
 		id: "stable", singular:"stable", plural:"stables",
 		prereqs:{ horseback: true },
 		require:{ food:60, wood:60, stone:120, leather:10 },
-		effectText:"allows 10 cavalry" }),
+		effectText:"Allows 10 Cavalry" }),
 	new Building({ 
 		id: "graveyard", singular:"graveyard", plural:"graveyards",
 		prereqs:{ masonry: true },
 		require:{ wood:50, stone:200, herbs:50 },
 		vulnerable: false, // Graveyards can't be sacked
-		effectText:"contains 100 graves",
+		effectText:"Contains 100 Graves",
 		onGain: function(num) { if (num === undefined) { num = 1; } digGraves(num); }}),
 	new Building({ 
 		id: "mill", singular:"mill", plural:"mills",
@@ -148,7 +148,7 @@ function getCivData () {
 			}; 
 		},
 		set require(value) { return this.require; }, // Only here for JSLint.
-		effectText: "improves farmers" }),
+		effectText: "Improves Farmers" }),
 	new Building({ 
 		id: "fortification", singular:"fortification", plural:"fortifications", efficiency: 0.01,
 		prereqs:{ architecture: true },
@@ -160,7 +160,7 @@ function getCivData () {
 			}; 
 		},
 		set require(value) { return this.require; }, // Only here for JSLint.
-		effectText:"helps protect against attack" }),
+		effectText:"Helps protect against attack" }),
 	// Altars
 	// The 'name' on the altars is really the label on the button to make them.
 	//xxx This should probably change.
@@ -197,35 +197,35 @@ function getCivData () {
 	new Upgrade({ 
 		id: "skinning", name:"Skinning", subType: "upgrade",
 		require: { skins: 10 },
-		effectText:"Farmers can collect skins" }),
+		effectText:"Farmers can collect Skins" }),
 	new Upgrade({ 
 		id: "harvesting", name:"Harvesting", subType: "upgrade",
 		require: { herbs: 10 },
-		effectText:"Woodcutters can collect herbs" }),
+		effectText:"Woodcutters can collect Herbs" }),
 	new Upgrade({ 
 		id: "prospecting", name:"Prospecting", subType: "upgrade",
 		require: { ore: 10 },
-		effectText:"Miners can collect ore" }),
+		effectText:"Miners can collect Ore" }),
 	new Upgrade({ 
 		id: "domestication", name:"Domestication", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { leather: 20 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase Farmer Food output" }),
 	new Upgrade({ 
 		id: "ploughshares", name:"Ploughshares", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { metal:20 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase Farmer Food output" }),
 	new Upgrade({ 
 		id: "irrigation", name:"Irrigation", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 500, stone: 200 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase Farmer Food output" }),
 	new Upgrade({ 
 		id: "butchering", name:"Butchering", subType: "upgrade",
 		prereqs:{ construction: true, skinning: true },
 		require: { leather: 40 },
-		effectText:"More farmers collect more skins" }),
+		effectText:"More Farmers collect more Skins" }),
 	new Upgrade({ 
 		id: "gardening", name:"Gardening", subType: "upgrade",
 		prereqs:{ construction: true, harvesting: true },
@@ -733,7 +733,8 @@ function getCivData () {
 	}),
 		//cats
 	new Achievement({id:"catAch", name:"Cat!", 
-		test:function() { return civData.cat.owned >= 1; }
+		test:function() { return civData.cat.owned >= 1; },
+        effectText:"Have 1 Cat"
 	}),
 	new Achievement({id:"glaringAch", name:"Glaring", 
 		test:function() { return civData.cat.owned >= 10; }
@@ -794,7 +795,7 @@ function getCivData () {
 		};
 		// Add the civ size based achivements to the front of the data, so that they come first.
 		for (i=civSizes.length-1;i>0;--i) {
-			civData.unshift(new Achievement({id:civSizes[i].id+"Ach", name:civSizes[i].name, test:testCivSizeAch}));
+			civData.unshift(new Achievement({id:civSizes[i].id+"Ach", name:civSizes[i].name, test:testCivSizeAch, effectText:"Have " + civSizes[i].min_pop + " Workers"}));
 		}
 		//xxx TODO: Add deity domain based achievements here too.
 	}

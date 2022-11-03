@@ -71,9 +71,9 @@ CivObj.prototype = {
 	// Specific 'singular' and 'plural' used if present and appropriate,
 	// otherwise returns 'name'.
 	getQtyName: function(qty) { 
-		if (qty === 1 && this.singular) { return this.singular; }
-		if (typeof qty == "number" && this.plural) { return this.plural; }
-		return this.name || this.singular || "(UNNAMED)";
+		if (qty === 1 && this.singular) { return this.singular.charAt(0).toUpperCase() + this.singular.slice(1); }
+		if (typeof qty == "number" && this.plural) { return this.plural.charAt(0).toUpperCase() + this.plural.slice(1); }
+		return this.name || this.singular.charAt(0).toUpperCase() + this.singular.slice(1) || "(UNNAMED)";
 	}
 };
 
