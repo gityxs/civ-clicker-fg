@@ -1,1 +1,1 @@
-# civclickerbyfg
+# CivClicker by FG
