@@ -403,7 +403,7 @@ function updateUpgrades(){
 	});
 
 	// Deity techs
-	//ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
+	ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
 	ui.find("#renameDeity").disabled = (!civData.worship.owned);
 	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));

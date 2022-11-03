@@ -741,7 +741,7 @@
                 ajax.get("https://api.github.com/repos/freddecgames/civclickerbyfg/releases/latest", function(responseText, response) {
                 
                     let latestTagName = response.tag_name
-                    if (latestTagName != currentTagName) {
+                    if (latestTagName != currentTagName) {                    
                         ui.show("#newRelease", true)
                     }
                 })
