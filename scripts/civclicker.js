@@ -2537,7 +2537,7 @@ function docorpse() {
 	infected = spreadPlague(infected);
 	if (infected > 0) {
 		calculatePopulation();
-		gameLog(prettify(infected) + " citizens got sick"); //notify player
+		gameLog(prettify(infected) + " Workers got sick"); //notify player
 	}
 
 	// Corpse has a 50-50 chance of decaying (at least there is a bright side)

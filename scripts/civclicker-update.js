@@ -120,13 +120,17 @@ function updatePurchaseRow (purchaseObj) {
 	if (purchaseObj.hasVariableCost()) { updateRequirements(purchaseObj); }
 
 	// Already having one reveals it as though we met the prereq.
-	var havePrereqs = (purchaseObj.owned > 0) || meetsPrereqs(purchaseObj.prereqs);
+	var havePrereqs = (purchaseObj.owned != 0) || meetsPrereqs(purchaseObj.prereqs);
 
 	// Special check: Hide one-shot upgrades after purchase; they're
 	// redisplayed elsewhere.
 	var hideBoughtUpgrade = ((purchaseObj.type == "upgrade") && (purchaseObj.owned == purchaseObj.limit) && !purchaseObj.salable);
 
 	var maxQty = canPurchase(purchaseObj);
+    if (purchaseObj.type == "building") {
+        maxQty = Math.max(0, Math.min(maxQty, civData.freeLand.owned))
+    }
+    
 	var minQty = canPurchase(purchaseObj,-Infinity);
 
 	var buyElems = elem.querySelectorAll("[data-action='purchase']");
