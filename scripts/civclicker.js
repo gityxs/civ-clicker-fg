@@ -1,171 +1,120 @@
-var setup = {};
-var loopTimer = 0;
-
-var saveTag = "civ";
-var saveTag2 = saveTag + "2"; // For old saves.
-var saveSettingsTag = "civSettings";
-var logRepeat = 1;
-
-// Civ size category minimums
+//---
+var saveTag = "civ"
+var saveSettingsTag = "civSettings"
+//---
+var logRepeat = 1
+//---
 var civSizes = [
-	{ min_pop :      0, name: "Thorp"       , id : "thorp"      },
-	{ min_pop :     20, name: "Hamlet"      , id : "hamlet"     },
-	{ min_pop :     60, name: "Village"     , id : "village"    },
-	{ min_pop :    200, name: "Small Town"  , id : "smallTown"  },
-	{ min_pop :   2000, name: "Large Town"  , id : "largeTown"  },
-	{ min_pop :   5000, name: "Small City"  , id : "smallCity"  },
-	{ min_pop :  10000, name: "Large City"  , id : "largeCity"  },
-	{ min_pop :  20000, name:"Metro&shy;polis",id : "metropolis" },
-	{ min_pop :  50000, name: "Small Nation", id : "smallNation"},
-	{ min_pop : 100000, name: "Nation"      , id : "nation"     },
-	{ min_pop : 200000, name: "Large Nation", id : "largeNation"},
-	{ min_pop : 500000, name: "Empire"      , id : "empire"     }
-];
-
+	{ min_pop:      0, name: "Thorp",        id: "thorp"       },
+	{ min_pop:     20, name: "Hamlet",       id: "hamlet"      },
+	{ min_pop:     60, name: "Village",      id: "village"     },
+	{ min_pop:    200, name: "Small Town",   id: "smallTown"   },
+	{ min_pop:   2000, name: "Large Town",   id: "largeTown"   },
+	{ min_pop:   5000, name: "Small City",   id: "smallCity"   },
+	{ min_pop:  10000, name: "Large City",   id: "largeCity"   },
+	{ min_pop:  20000, name: "Metropolis",   id: "metropolis"  },
+	{ min_pop:  50000, name: "Small Nation", id: "smallNation" },
+	{ min_pop: 100000, name: "Nation",       id: "nation"      },
+	{ min_pop: 200000, name: "Large Nation", id: "largeNation" },
+	{ min_pop: 500000, name: "Empire",       id: "empire"      }
+]
+//---
 var PATIENT_LIST = [
-	"healer","cleric","farmer","soldier","cavalry","labourer",
-	"woodcutter","miner","tanner","blacksmith","unemployed"
-];
-
-// Declare variables here so they can be referenced later.  
+	"healer", "cleric", "farmer", "soldier", "cavalry", "labourer",
+	"woodcutter", "miner", "tanner", "blacksmith", "unemployed"
+]
+//---
 var curCiv = {
+    
 	civName: "Freddec Games",
 	rulerName: "Freddec",
 
 	zombie: { owned:0 },
 	grave: { owned:0 },
 	enemySlain: { owned:0 },
-	morale: { 
-		mod: 		1.0,
-		efficiency: 1.0
-	},
+	morale: { mod:1.0, efficiency:1.0 },
 
-	resourceClicks : 0, // For NeverClick
-	attackCounter : 0, // How long since last attack?
+	resourceClicks: 0,
+	attackCounter: 0,
 
-	trader : {
-		materialId: "",
-		requested: 	0,
-		timer: 		0, // How many seconds will the trader be around
-		counter: 	0 // How long since last trader?
-	},
+	trader: { materialId: "", requested: 0, timer: 0, counter: 0 },
 
-	raid: {
-		raiding: false, // Are we in a raid right now?
-		victory: false, // Are we in a "raid succeeded" (Plunder-enabled) state right now?
-		epop: 0,  // Population of enemy we're raiding.
-		plunderLoot: {}, // Loot we get if we win.
-		last: "",
-		targetMax: civSizes[0].id // Largest target allowed
-	},
+	raid: { raiding: false, victory: false, epop: 0, plunderLoot: {}, last: "", targetMax: civSizes[0].id },
 
-	curWonder: {
-		name: "",
-		stage: 0, // 0 = Not started, 1 = Building, 2 = Built, awaiting selection, 3 = Finished.
-		progress: 0, // Percentage completed.
-		rushed: false
-	},
-	wonders:[],  // Array of {name: name, resourceId: resourceId} for all wonders.
+	curWonder: { name: "", stage: 0, progress: 0, rushed: false },
+	wonders:[],
 
-	// Known deities.  The 0th element is the current game's deity.
-	// If the name is "", no deity has been created (can also check for worship upgrade)
-	// If the name is populated but the domain is not, the domain has not been selected.
-	deities : [ { name:"", domain:"", maxDev:0 } ]  // array of { name, domain, maxDev }
+	deities : [ { name:"", domain:"", maxDev:0 } ],
+}
+//---
+var population = { current:	0, living: 0, zombie: 0, limit: 0, healthy:	0, totalSick: 0 }
+//---
+var civData = getCivData()
+//---
+var wonderCount = {}
+var wonderResources = getWonderResources(civData)
+//---
+var settings = { autosave: true, autosaveCounter: 1, autosaveTime: 60, customIncr: false, fontSize: 1.0, delimiters: true, textShadow: false, notes: true, worksafe: false, useIcons: true }
 
-	//xxx We're still accessing many of the properties put here by civData
-	//elements without going through the civData accessors.  That should
-	//change.
-};
-
-// These are not saved, but we need them up here for the asset data to init properly.
-var population = {
-	current:	0,
-	living:		0,
-	zombie:		0,
-	limit:		0,
-	healthy:	0,
-	totalSick:	0,
-	extra: 		0
-};
-
-// Caches the total number of each wonder, so that we don't have to recount repeatedly.
-var wonderCount = {};
-
-var civData = getCivData(); // Giant array of data, defined in "data" js
-
-// Build a variety of additional indices so that we can iterate over specific
-// subsets of our civ objects.
-var resourceData	= []; // All resources
-var buildingData	= []; // All buildings
-var upgradeData 	= []; // All upgrades
-var powerData 		= []; // All 'powers' //xxx This needs refinement.
-var unitData 		= []; // All units
-var achData 		= []; // All achievements
-var sackable		= []; // All buildings that can be destroyed
-var lootable		= []; // All resources that can be stolen
-var killable		= []; // All units that can be destroyed
-var homeBuildings	= []; // All buildings to be displayed in the home area
-var homeUnits		= []; // All units to be displayed in the home area
-var armyUnits		= []; // All units to be displayed in the army area
-var basicResources	= []; // All basic (click-to-get) resources
-var normalUpgrades	= []; // All upgrades to be listed in the normal upgrades area
-
-// The resources that Wonders consume, and can give bonuses for.
-var wonderResources = getWonderResources(civData); // defined in "data" js
-
-// These are settings that should probably be tied to the browser.
-var settings = {
-	autosave: 			true,
-	autosaveCounter: 	1,
-	autosaveTime: 		60, //Currently autosave is every minute. Might change to 5 mins in future.
-	customIncr: 		false,
-	fontSize: 			1.0,
-	delimiters: 		true,
-	textShadow: 		false,
-	notes: 				true,
-	worksafe: 			false,
-	useIcons: 			true
-};
-
-
-function setIndexArrays (civData) {
-	civData.forEach(function(elem){ 
+//---
+var resourceData = []
+var buildingData = []
+var upgradeData = []
+var powerData = []
+var unitData = []
+var achData = []
+var sackable = []
+var lootable = []
+var killable = []
+var homeBuildings = []
+var homeUnits = []
+var armyUnits = []
+var basicResources = []
+var normalUpgrades = []
+//---
+function buildInternalLists(civData) {
+    
+	civData.forEach(elem => {
+        
 		if (!(elem instanceof CivObj)) { 
-			console.error("Unknown type:", elem);
-			return; 
+			console.error("Unknown type: ", elem)
+			return
 		}
-		if (elem.type == "resource") { 
-			resourceData.push(elem); 
-			if (elem.vulnerable === true) { 
-				lootable.push(elem); 
-			}
-			if (elem.subType == "basic") { 
-				basicResources.push(elem); 
-			} 
-		} 
-		if (elem.type == "building") { 
+        
+		if (elem.type == "resource") {
+            
+			resourceData.push(elem)
+			if (elem.vulnerable === true) { lootable.push(elem) }
+			if (elem.subType == "basic") { basicResources.push(elem) } 
+		}        
+		else if (elem.type == "building") {
+            
 			buildingData.push(elem); 
 			if (elem.vulnerable === true) { sackable.push(elem); }
 			if (elem.subType == "normal" || elem.subType == "land") { homeBuildings.push(elem); } 
 		}
-		if (elem.subType == "prayer") { 
-			powerData.push(elem); 
-		} else if (elem.type == "upgrade") { 
-			upgradeData.push(elem); 
+        else if (elem.type == "upgrade") {
+            
+			upgradeData.push(elem)
+            
 			if (elem.subType == "upgrade") { 
 				normalUpgrades.push(elem); 
-			} 
+			}
+            if (elem.subType == "prayer") {
+                
+                powerData.push(elem)
+            }
 		}
-		if (elem.type == "unit") { 
+		else if (elem.type == "unit") { 
 			unitData.push(elem); 
 			if (elem.vulnerable === true) { killable.push(elem); }
 			if (elem.place == "home") { homeUnits.push(elem); }
 			if (elem.place == "party") { armyUnits.push(elem); } 
 		}
-		if (elem.type == "achievement") { 
+		else if (elem.type == "achievement") { 
 			achData.push(elem); 
 		}
-	});
+	})
 }
 
 
@@ -179,7 +128,6 @@ function calculatePopulation () {
 		limitIncludingUndead: 0,
 		healthy:	0,
 		totalSick:	0,
-		extra: 		0
 	};
 
 	//Update population limit by multiplying out housing numbers
@@ -206,8 +154,6 @@ function calculatePopulation () {
 			} else {
 				population.healthy += 1; // TODO: Not sure if this is calculated right
 			}
-		} else {
-			population.extra += unit.owned;
 		}
 	});
 	// Calculate housed/fed population (excludes zombies)
@@ -1941,62 +1887,39 @@ function migrateGameData(loadVar, settingsVarReturn)
 }
 
 // Load in saved data
-function load (loadType) {
+function load(loadType) {
 	//define load variables
-	var loadVar = {},
-		loadVar2 = {},
-		settingsVar = {};
+	var loadVar = {}
+	var settingsVar = {}
 
-	if (loadType === "cookie") {
-		//check for cookies
-		if (read_cookie(saveTag) && read_cookie(saveTag2)){
-			//set variables to load from
-			loadVar = read_cookie(saveTag);
-			loadVar2 = read_cookie(saveTag2);
-			loadVar = mergeObj(loadVar, loadVar2);
-			loadVar2 = undefined;
-			//notify user
-			gameLog("Loaded saved game from cookie");
-			gameLog("Save system switching to localStorage.");
-		} else {
-			console.log("Unable to find cookie");
-			return false;
-		}
-	}
-	
 	if (loadType === "localStorage") {
 		//check for local storage
 		var string1;
-		var string2;
 		var settingsString;
+
 		try {
 			settingsString = localStorage.getItem(saveSettingsTag);
 			string1 = localStorage.getItem(saveTag);
-			string2 = localStorage.getItem(saveTag2);
 
 			if (!string1) {
 				console.log("Unable to find variables in localStorage. Attempting to load cookie.");
-				return load("cookie");
+				return
 			}
 
 		} catch(err) {
 			if (!string1) { // It could be fine if string2 or settingsString fail.
 				handleStorageError(err);
-				return load("cookie");
+				return
 			}
 		}
 		
 		// Try to parse the strings
 		if (string1) { try { loadVar  = JSON.parse(string1); } catch(ignore){} }
-		if (string2) { try { loadVar2 = JSON.parse(string2); } catch(ignore){} }
 		if (settingsString) { try { settingsVar = JSON.parse(settingsString); } catch(ignore){} }
-
-		// If there's a second string (old save game format), merge it in.
-		if (loadVar2) { loadVar = mergeObj(loadVar, loadVar2); loadVar2 = undefined; }
 
 		if (!loadVar) {
 			console.log("Unable to parse variables in localStorage. Attempting to load cookie.");
-			return load("cookie");
+			return
 		}
 
 		//notify user
@@ -2090,7 +2013,6 @@ function save(savetype){
 	try {
 		// Delete the old cookie-based save to avoid mismatched saves
 		deleteCookie(saveTag);
-		deleteCookie(saveTag2);
 
 		localStorage.setItem(saveTag, JSON.stringify(saveVar));
 
@@ -2128,10 +2050,7 @@ function deleteSave(){
 	if (!confirm("All progress and achievements will be lost.\nReally delete save?")) { return; } //Check the player really wanted to do that.
 
 	try {
-		deleteCookie(saveTag);
-		deleteCookie(saveTag2);
 		localStorage.removeItem(saveTag);
-		localStorage.removeItem(saveTag2);
 		localStorage.removeItem(saveSettingsTag);
 		gameLog("Save Deleted");
 		if (confirm("Save Deleted. Refresh page to start over?")) {
@@ -2406,17 +2325,17 @@ function doHealers() {
 	var numHealers = civData.healer.owned + (civData.cat.owned * (civData.companion.owned));
 
 	// How much healing can we do?
-	civData.healer.cureCount += (numHealers * civData.healer.efficiency * curCiv.morale.efficiency);
-
+	let cureCount = (numHealers * civData.healer.efficiency * curCiv.morale.efficiency)
+    
 	// We can't cure more sick people than there are
-	civData.healer.cureCount = Math.min(civData.healer.cureCount, population.totalSick);
-
+	cureCount = Math.min(cureCount, population.totalSick)
+    
 	// Cure people until we run out of healing capacity or herbs
-	while (civData.healer.cureCount >= 1 && civData.herbs.owned >= 1) {
+	while (cureCount >= 1 && civData.herbs.owned >= 1) {
 		job = getNextPatient();
 		if (!job) { break; }
 		healByJob(job); 
-		--civData.healer.cureCount;
+		--cureCount;
 		--civData.herbs.owned;
 		++numHealed;
 	}
@@ -2435,13 +2354,13 @@ function doPlague () {
 
 	if (deathRoll <= 5) { // 5% chance that 1 person dies
 		killUnit(unitInfected);
-		gameLog("A sick " + unitInfected.singular + " dies.");
+		gameLog("A sick " + unitInfected.getQtyName(1) + " dies.");
 		// TODO: Decrease happiness
 		calculatePopulation();
 		return true;
 	} else if (deathRoll > 99.9) { // 0.1% chance that it spreads to a new person
 		spreadPlague(1);
-		gameLog("The sickness spreads to a new citizen.");
+		gameLog("The sickness spreads to a new worker.");
 		return true;
 	} else {
 
@@ -3092,32 +3011,8 @@ function gameLoop () {
 
 
 
-
-//========== TESTING (cheating)
-
-function ruinFun(){
-	//Debug function adds loads of stuff for free to help with testing.
-	civData.food.owned += 1000000;
-	civData.wood.owned += 1000000;
-	civData.stone.owned += 1000000;
-	civData.barn.owned += 5000;
-	civData.woodstock.owned += 5000;
-	civData.stonestock.owned += 5000;
-	civData.herbs.owned += 1000000;
-	civData.skins.owned += 1000000;
-	civData.ore.owned += 1000000;
-	civData.leather.owned += 1000000;
-	civData.metal.owned += 1000000;
-	civData.piety.owned += 1000000;
-	civData.gold.owned += 10000;
-	renameRuler("Cheater");
-	calculatePopulation();
-	updateAll();
-};
-
-
-
 //========== SETUP (Functions meant to be run once on the DOM)
+var setup = {};
 
 setup.all = function () {
 	setup.data();
@@ -3129,7 +3024,7 @@ setup.all = function () {
 };
 
 setup.data = function () {
-	setIndexArrays(civData);
+	buildInternalLists(civData);
 };
 
 setup.civSizes = function () {
@@ -3177,17 +3072,7 @@ setup.loop = function () {
 	// This sets up the main game loop, which is scheduled to execute once per second.
 	console.log("Setting up Main Loop");
 	gameLoop();
-	loopTimer = window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
+	window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
 };
 
 setup.all();
-
-
-/*
- * If you're reading this, thanks for playing!
- * This project was my first major HTML5/Javascript game, and was as
- * much about learning Javascript as it is anything else. I hope it
- * inspires others to make better games. :)
- *
- *     David Holley
- */
