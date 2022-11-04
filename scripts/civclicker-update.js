@@ -218,13 +218,6 @@ function updateResourceTotals(){
 	ui.find("#totalBuildings").innerHTML = prettify(landTotals.buildings);
 	ui.find("#totalLand"     ).innerHTML = prettify(landTotals.lands);
 
-	// Unlock advanced control tabs as they become enabled (they never disable)
-	// Temples unlock Deity, barracks unlock Conquest, having gold unlocks Trade.
-	// Deity is also unlocked if there are any prior deities present.
-	if ((civData.temple.owned > 0)||(curCiv.deities.length > 1)) { ui.show("#deitySelect",true); }
-	if (civData.barracks.owned > 0) { ui.show("#conquestSelect",true); }
-	if (civData.gold.owned > 0) { ui.show("#tradeSelect",true); }
-
 	// Need to have enough resources to trade
 	ui.find("#tradeButton").disabled = !curCiv.trader || !curCiv.trader.timer ||
 		(civData[curCiv.trader.materialId].owned < curCiv.trader.requested);
@@ -345,46 +338,7 @@ function updatePopulation (calc) {
 	updatePartyButtons(); // handles the display of units out on raids.
 	updateMorale();
 	updateAchievements(); //handles display of achievements
-	updatePopulationBar();
-	updateLandBar();
 }
-
-function updatePopulationBar () {
-/*
-	var barElt = ui.find("#populationBar");
-	var h = '';
-	function getUnitPercent (x, y) {
-		return (Math.floor(100000 * (x / y)) / 1000);
-	}
-	unitData.forEach(function(unit){
-		var p;
-		if (unit.isPopulation) {
-			p = getUnitPercent(unit.owned, population.current);
-			h += (
-				'<div class="' + unit.id + '" '
-				+ ' style="width: ' + p + '%">'
-				+ '<span>' + (Math.round(p * 10)/10) + '% ' + unit.plural + '</span>'
-				+ '</div>'
-			);
-		}
-	});
-	barElt.innerHTML = (
-		'<div style="min-width: ' + getUnitPercent(population.current, population.limitIncludingUndead) + '%">' 
-		+ h 
-		+ '</div>'
-	);
-*/
-}
-
-function updateLandBar () {
-/*
-	var barElt = ui.find("#landBar");
-	var landTotals = getLandTotals();
-	var p = (Math.floor(1000 * (landTotals.buildings / landTotals.lands)) / 10);
-	barElt.innerHTML = ('<div style="width: ' + p + '%"></div>');	
-*/
-}
-
 
 // Check to see if the player has an upgrade and hide as necessary
 // Check also to see if the player can afford an upgrade and enable/disable as necessary
@@ -419,7 +373,7 @@ function updateUpgrades(){
 	ui.findAll("#deityDomains button.purchaseFor500Piety").forEach(function(button){
 		button.disabled = (!canSelectDomain || (civData.piety.owned < 500));
 	});
-	//ui.show("#deitySelect .alert", canSelectDomain);
+	ui.show("#deitySelect .alert", canSelectDomain);
 
 	ui.show("#" + domain + "Upgrades", hasDomain);
 
@@ -430,6 +384,9 @@ function updateUpgrades(){
 	// Trade
 	ui.show("#tradeUpgradeContainer", civData.trade.owned);
 	ui.show("#tradePane .notYet", !civData.trade.owned);
+    ui.findAll("#tradePane .tradeResource").forEach(elem => {
+        elem.disabled = civData.gold.owned < 1
+    })
 }
 
 
@@ -580,10 +537,10 @@ function updateWonder () {
 	var lowItem = getWonderLowItem();
 	
 	ui.show("#lowResources", isLimited);
-	ui.show("#upgradesSelect .alert", isLimited);
+	ui.show("#upgradesSelect .notif", isLimited);
 
 	if (lowItem) { 
-		ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); 
+		ui.find("#limited").innerHTML = " by low <span class='text-capitalize'>" + lowItem.getQtyName() + "</span>"
 	}
 
 	if (curCiv.curWonder.progress >= 100) {

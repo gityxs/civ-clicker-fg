@@ -35,13 +35,13 @@ body {
 }
 
 .badge {
-    --bs-badge-font-size: 0.8em;
+    --bs-badge-font-size: .8em;
     --bs-badge-font-weight: 400;
 }
 
 .dropdown-menu {
-    --bs-dropdown-padding-x: 0.75rem;
-    --bs-dropdown-padding-y: 0.25rem;
+    --bs-dropdown-padding-x: .75rem;
+    --bs-dropdown-padding-y: .25rem;
     --bs-dropdown-font-size: .8rem;
     --bs-dropdown-bg: #cdd9e5;
     --bs-dropdown-color: #373e47;
@@ -53,572 +53,110 @@ body {
 .happy-4 :nth-child(4) > span { color: #fff!important; background-color: #aa3!important; opacity: 1; }
 .happy-5 :nth-child(5) > span { color: #fff!important; background-color: #c33!important; opacity: 1; }
 
+.icon-lg { height: 24px; width: 24px; }
+.icon-sm { height: 14px; width: 14px;  margin-top: -2px; }
 
-
-
-
-
-
-
-
-
-
-.icon-lg{
-	height: 24px;
-	width: 24px;
-}
-.icon-sm{
-	height:14px;
-	width:14px;
-    margin-top:-2px;
-}
-
-.ff-suezOne {
-font-family: 'Suez One', serif; }
-
-#header {
-	font-family: 'Suez One', serif;
-}
-	#header h1 {
-		font-weight: normal;
-		margin-top: 0;
-		margin-bottom: 0;
-	}
-	#header.condensed {
-		margin-top: 0;
-		margin-bottom: 0;
-	}
-		#header.condensed h1 {
-			padding: 0;
-			margin: 0;
-			font-size: 1.5em;
-		}
-		#header.condensed #ruler {
-			display: none;
-		}
-
-
-
-
-
-
+.ff-suezOne { font-family: 'Suez One', serif; }
 
 #impexpField{
-	width: 100%;
-	height: 10em;
-    border-radius: 0.75em;
+	width: 100%; height: 10em;
     background-color: #2d333b;
-    border: 1px solid #cdd9e51a;
+    border: 1px solid #cdd9e51a; border-radius: .75em;
     padding: .5rem;
     color: #cdd9e5;
 }
-#expButton{
-	width:10em;
-}
-#expSelect{
-	width:10em;
-}
-#impButton{
-	width:10em;
-}
 
-h3{
-	clear:both;
-}
-
+.w-10 { min-width: 10em; }
 
 button {
-	font-family: 'Suez One', serif;
-	border: 1px solid #cdd9e51a;
+	font-family: 'Suez One', serif; font-size: .9em; font-weight: 500; color: #cdd9e5;
+	border: 1px solid #cdd9e51a; border-radius: .75em;
 	background-color: #373e47;
 	padding: 0.25em 0.5em;
-	font-size: 0.9em; color:#cdd9e5;
-	font-weight: 500;
-	border-radius: 0.75em;
-	cursor: pointer;
 	outline: none;
 }
-	button:hover:enabled {
-		border-color: rgba(0,0,0,1);
-		background-color: #cdd9e5;
-		color: #373e47;
-	}
-	button:disabled {
-		cursor: not-allowed;
-		opacity:.25;
-	}
-	button:active, button:active:hover {
-		background-color: rgba(200,255,180,0.9);
-	}
-    
-
-#upgrades button {
-	min-width: 10em;
+button:hover:enabled, button:active, button:active:hover {
+    border-color: rgba(0, 0, 0, 1);
+    background-color: #cdd9e5;
+    color: #373e47;
 }
-#deityPane button {
-	min-width: 10em;
-}
-#conquestPane button {
-    min-width: 10em;
-}
-#tradePane button {
-    min-width: 10em;
-}
-#textSize button,
-#party button,
-#buildings button,
-#deityPane button.xInfinity, /* Needed for Raise Dead */
-#deityPane button.x100{
-	min-width: 2.5em;
-	text-shadow:none;
-	font-weight:normal;
-	font-size: 0.9em;
-	margin: 0.1em 0;
-	padding: 0.2em 0.4em;
-	text-transform: capitalize;
-	border-radius: 0.5em
-}
-.buycustom button{
-	width:7.5em !important; /* Need to make this override the above */
-}
-.wonderCompleted button {
-	width:5em;
+button:disabled {
+    cursor: not-allowed;
+    opacity: .25;
 }
 
+#tradePane button { min-width: 10em; }
+#upgradesPane button { min-width: 10em; }
 
-
-.panesTabs {
-
-}
-	.panesTabs:after /* clearfix */ { content: ""; display: table; clear: both; }
+#deityPane button { min-width: 10em; }
+#deityPane button.xInfinity, #deityPane button.x100 { min-width: 2.5em; }
 
 .paneSelector {
 	position: relative;
-	text-align: center;
-	padding: 0.25em 1em;
-	line-height:2em;
-	border: 1px solid transparent;
+	text-align: center; line-height: 2em; text-decoration: none;
+	padding: 0.25em 1em;		
 	color: #f39c12;
-	border-top-left-radius: 0.75em;
-	border-top-right-radius: 0.75em;
+	border: 1px solid transparent; border-top-left-radius: .75em; border-top-right-radius: .75em; border-bottom-color: #cdd9e51a;
 	cursor: pointer;
-    border-bottom-color: #cdd9e51a;
 }
-	.paneSelector:hover {
-		color: #c87f0a;
-	}
+.paneSelector:hover {
+    color: #c87f0a;
+}
+.paneSelector.active {
+    border-color: #cdd9e51a; border-bottom: 0;
+    background: #2d333b;
+    color: #cdd9e5;
+    font-weight: bold;
+}
 
-	.paneSelector.selected{
-		padding-top: 0.25em;
-		padding-bottom: 0.25em;
-		border-color: #cdd9e51a;
-		border-bottom: 0;
-		background: #2d333b;
-		color: #cdd9e5;
-		font-weight: bold;
-	}
 .paneSelector .notif {
 	display: none;
-	position: absolute;
-	font-size: 1em;
-	top: -0.5em;
-	right: -0.25em;
-	width: 1.5em;
-	height: 1.5em;
-	line-height: 1.2em;
-	text-align: center;
+	position: absolute; top: -.5em; right: -.25em;
+	font-family: 'Suez One', serif; font-size: 1em;	color: #333;
+	width: 1.5em; height: 1.5em;
+	line-height: 1.2em; text-align: center;
 	background: #ffff99;
-	border: solid 2px white;
-	border-radius: 1.5em;
-	font-family: 'Suez One', serif;
-	color: #333;
+	border: solid 2px white; border-radius: 1.5em;
 	z-index: 2;
 }
 
 .selectPane {
-	display: none;
 	background-color: #2d333b;
-	border-bottom-left-radius: 0.75em;
-	border-bottom-right-radius: 0.75em;
-}
-	.selectPane.selected {
-		/* Note that this will cause a problem for non-block elements */
-		/* We should use 'default', but it's not sufficiently supported yet */
-		display: block;
-        border: 1px solid #cdd9e51a;
-        border-top: 0;
-	}
-
-.devcost{
-	padding-right:1em;
+    border: 1px solid #cdd9e51a; border-top: 0; border-bottom-left-radius: .75em; border-bottom-right-radius: .75em;
+    padding: 1rem .25rem 1rem 0;
 }
 
+.building10, .building100, .building1000, .buildingInfinity { display: none; }
+.unit10, .unit100, .unit1000, .unitInfinity { display: none; }
 
-.tip {
-	font-style: italic;
-	color: #555;
-}
+#logTable td { padding-right: 20px; }
+#logTable td:last-child { padding-right: 0px; text-align: right; }
 
-.costIcon {
-    margin-top: -2px;
-}
+.table > :not(caption) > * > * { padding: .125rem 0; }
 
-.number {
-	text-align: right;
-	padding-right: 0.3em;
-	font-size: 1.2em;
-}
-	.maxNumber {        
-		font-size: 1em;
-	}
-
-
-
-
-#oldDeities{
-	display: none;
-}
-
-#deityDomains{
-	display: none;
-}
-	#deityDomains li {
-		display: block;
-	}
-
-#battleUpgrades,
-#fieldsUpgrades,
-#underworldUpgrades,
-#catsUpgrades{
-	display: none;
-}
-.enemy{
-	color:red;
-	font-weight:bold;
-}
-
-#customJobQuantity,
-#customBuildQuantity,
-#customPartyQuantity,
-#customSpawnQuantity{
-	display: none;
-}
-#customBuildQuantity{
-	margin-left:1em;
-}
-
-
-
-#victoryGroup{
-	display: none;
-}
-
-.itemname{
-	padding-left:0.3em;
-	text-transform:capitalize;
-}
-
-
-.building10,
-.building100,
-.building1000,
-.buildingInfinity,
-.unit10,
-.unit100,
-.unit1000,
-.unitInfinity,
-.buycustom {
-	display:none;
-}
-
-
-#zombieWorkers{
-	display:none;
-}
-
-.Pupgrade {
-	display:none;
-}
-
-#logTable td{
-	padding-right:20px;
-}
-#logTable td:last-child{
-	padding-right:0px;
-    text-align: right;
-}
-
-.tooltip { font-size:.8rem; }
-
-#graveTotal{
-	display:none;
-}
-
-.table>:not(caption)>*>* {
-    padding: 0.125rem 0;
-}
-
-#achievements {
-
-}
-#achievements:after /* clearfix */ { content: ""; display: table; clear: both; }
-.achievement{
-	display: block;
-	float: left;
-	width: 60px;
-	height: 60px;
-	background-color: #737373;
-	background-image: url('../images/achLocked.jpg');
-	background-position: center center;
-	background-repeat: no-repeat;
-	margin: 0.5em;
-	font-family: 'Suez One', serif;
-}
-.break{
-	display:block;
-	width:20px;
-}
-.unlockedAch{
-	box-sizing: border-box;
-	border: 5px ridge #FBDA20;
-	width: 70px;
-	height: 70px;
-	padding: 0.2em;
-	margin: -5px 0 0 -5px;
-	font-size: 0.9em;
-	box-shadow: 0 0.25em 0.3em rgba(0,0,0,0.25), inset 0 0 0.5em rgba(0,0,0,0.25);
-	font-weight: normal;
-	background-color: #FBDA20;
-	display: none; /* Initially */
-}
-#gloryGroup{
-	display:none;
-}
-#wondersContainer{
-	display:none;
-	padding-bottom:0.3em;
-}
-#startWonderLine{
-	display:none;
-}
-
-#pastWonders td {
-	padding-right:1em;
-}
-
-#renameWonder{
-	width:5em;
-}
-
-#wonderInProgress{
-	display:none;
-}
-#speedWonderGroup{
-	display:none;
-}
-
-#lowResources{
-	display:none;
-	color:red;
-}
-
-#tradeContainer,
-#noTrader {
+#tradeContainer, #noTrader {
 	display: none;
 	padding: 0.5em 0;
 	text-align: center;
+    border-radius: .75em;
 }
 #tradeContainer {
 	background-color: #dd9;
-	border-radius: 0.5em;
-	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.1);
-	border: solid 2px white;
+	box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, .1);
+	border: solid 2px white; 
 }
 #noTrader {
-	min-height: 2em;
-	line-height: 2em;
-	background-color: rgba(0,0,0,0.05);
-	border: dashed 2px rgba(0,0,0,0.1);
-    border-radius:0.5em;
+	min-height: 2em; line-height: 2em;
+	background-color: rgba(0, 0, 0, .05);
+	border: dashed 2px rgba(0, 0, 0, .1);
 }
 
-#tradeButton {
-	min-width: 10em;
-}
-#tradeUpgradeContainer{
-	display: none;
-}
-#iconoclasmGroup{
-	display:none;
-}
-#versionAlert{
-	display:none;
-}
-#newVersionText{
-	color:#f00;
-	text-decoration:underline;
-}
-#newVersionText:hover{
-	cursor:pointer;
-}
-
-.resources {
-
-}
-	.resources img {
-		margin-right: 1em;
-		vertical-align: middle;
-	}
-	.resources label {
-		text-transform: capitalize;
-		display: inline-block;
-		min-width: 4em;
-	}
-
-/* #basicResources and special resources */
-#specialResourcesContainer{
-	margin: 0.5em 0 0.5em 0;
-}
-	#specialResourcesContainer .number{
-		padding:0 0.3em 0.3em 0.3em;
-	}
-	#basicResources label {
-		margin-left: 1em;
-	}
-	#specialResourcesContainer .net,
-	#specialResourcesContainer .perSecond {
-		font-size: 1em;
-	}
-
-#walkGroup{
-	display:none;
-}
-
-
-#resetNote,
-#resetDeity,
-#resetBoth,
-#resetWonder{
-	display:none;
-}
-
-
-.bar {
-	height: .8em;
-    border: 1px solid rgba(0,0,0,0.25);
-    border-radius: 5px;
-}
-	.bar div {
-		height: 100%;
-		width: 0;
-	}
-	.bar > div {
-		background-color: #bbb;
-	}
-	.bar > div > div {
-		float: left;
-	}
-#landBar > div {
-	background-color: #aca;
-}
 #progressContainer {
-	border: 1px solid rgba(0,0,0,0.2);
+    background-color: #22272e;
+	border: 1px solid rgba(0,0,0,0.2); border-radius: .75em;
 }
 #progressBar {
-	height: 1em;
-	background-color: #3f6;
-	width: 0%;
-}
-
-
-.totalSick { 	background-color: #fcc; }
-.unemployed { 	background-color: #bbb; }
-.farmer { 		background-color: #CF9221; }
-.woodcutter { 	background-color: #016901; }
-.miner { 		background-color: #887878; }
-.tanner { 		background-color: #591B11; }
-.blacksmith { 	background-color: #525252; }
-.healer { 		background-color: #003B00; }
-.cleric { 		background-color: #CF6666; }
-.labourer { 	background-color: #9f9; }
-.soldier { 		background-color: #f99; }
-.cavalry { 		background-color: #ff9; }
-.cat { 			background-color: #ff2; }
-.shade { 		background-color: #333; }
-.wolf { 		background-color: #999; }
-.bandit { 		background-color: #666; }
-.barbarian { 	background-color: #f63; }
-.esiege { 		background-color: #99f; }
-.soldierParty { background-color: #9ff; }
-.cavalryParty { background-color: #f9f; }
-.siege { 		background-color: #cc3; }
-.esoldier { 	background-color: #c44; }
-.efort { 		background-color: #cc4; }
-
-	.bar span {
-		display: none;
-		position: relative;
-		top: 1.25em;
-		background-color: rgba(0,0,0,0.3);
-		color: white;
-		width: 10em;
-		font-size: 80%;
-		text-align: center;
-		padding: 0.5em;
-		border-radius: 0.2em;
-		text-shadow: 0 1px 0 rgba(0,0,0,0.2);
-	}
-	.bar div:hover > span {
-		display: block;
-	}
-
-.form-control {
-    padding: .25rem .5rem;
-    border-radius: 0.75em;
-}
-
-#newSpawnJobSelection { 
-	background-color: transparent; 
-	font-size: inherit;
-	font-family: inherit;
-	border: solid 1px rgba(0,0,0,0.25);
-}
-
-
-
-/* Responsiveness */
-
-@media screen and (max-width: 1500px) {
-	.columns {
-		width: 90%;
-	}
-}
-@media screen and (max-width: 1350px) {
-	.columns {
-		width: 95%;
-	}
-}
-@media screen and (max-width: 1250px) {
-	.columns {
-		width: 100%;
-	}
-	.paneSelector {
-		padding-left: 0.5em;
-		padding-right: 0.5em;
-	}
-}
-@media screen and (max-width: 1000px) {
-	.columns {
-		width: 100%;
-		padding: 0 1em;
-	}
-	.column {
-		width: 100%;
-		float: none;
-	}
-	.column.left, 
-	.column.right {
-		padding-left: 0;
-		padding-right: 0;
-	}
+	height: .75em; width: 0%;
+	background-color: #3f6;	
+    border-radius: .75em;
 }

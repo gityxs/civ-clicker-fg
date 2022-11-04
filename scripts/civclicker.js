@@ -1,10 +1,6 @@
 var setup = {};
 var loopTimer = 0;
 
-// TODO: Update the version numbering internally
-var version = 19; // This is an ordinal used to trigger reloads.
-var versionData = new VersionData(1,1,59,"alpha"); // this is not accurate
-
 var saveTag = "civ";
 var saveTag2 = saveTag + "2"; // For old saves.
 var saveSettingsTag = "civSettings";
@@ -681,7 +677,7 @@ function addUpgradeRows()
 	var text="", standardUpgStr="", pantheonUpgStr="";
 
 	upgradeData.forEach( function(upgradeObj){ 
-		text = "<div id='P"+upgradeObj.id +"' class='col-12 Pupgrade'><div class='row gx-2 align-items-center'>"
+		text = "<div id='P"+upgradeObj.id +"' class='col-12' style='display: none;'><div class='row gx-2 align-items-center'>"
 			+"<div class='col'><strong>"+upgradeObj.getQtyName()+"</strong></div>"
 			+"<div class='col-auto text-end'>"+upgradeObj.effectText+"</div></div></div>";
 		if (upgradeObj.subType == "pantheon") { pantheonUpgStr += text; }
@@ -841,7 +837,6 @@ function doPurchase(objId,num){
 	var purchaseObj = civData[objId];
 	if (!purchaseObj) { console.log("Unknown purchase: "+objId); return 0; }
 	if (num === undefined) { num = 1; }
-	if (abs(num) ==  "custom") { num =  sgn(num) * getCustomNumber(purchaseObj); }
 
 	num = canPurchase(purchaseObj,num);  // How many can we actually get?
 
@@ -906,29 +901,6 @@ function onPurchase(control) {
 }
 
 
-function getCustomNumber(civObj){
-	if (!civObj||!civObj.customQtyId) { return undefined; }
-	var elem = document.getElementById(civObj.customQtyId);
-	if (!elem) { return undefined; }
-
-	var num = Number(elem.value);
-
-	// Check the above operations haven't returned NaN
-	// Also don't allow negative increments.
-	if (isNaN(num) || num < 0){
-		elem.style.background = "#f99"; //notify user that the input failed
-		return 0;
-	} 
-
-	num = Math.floor(num); // Round down
-
-	elem.value = num; //reset fractional numbers, check nothing odd happened
-	elem.style.background = "#fff";
-
-	return num;
-}
-
-
 //Calculates and returns the cost of adding a certain number of workers at the present population
 //xxx Make this work for negative numbers
 function calcWorkerCost(num, curPop){
@@ -953,8 +925,6 @@ function spawnCat() {
 function spawn(num){
 	var newJobId = "unemployed";
 	var bums = civData.unemployed;
-	if (num == "custom" ) { num =  getCustomNumber(bums); }
-	if (num == "-custom") { num = -getCustomNumber(bums); }
 
 	// Find the most workers we can spawn
 	num = Math.max(num, -bums.owned);  // Cap firing by # in that job.
@@ -1035,9 +1005,9 @@ function doStarve() {
 		//xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
 		numberStarve = starve(Math.ceil(population.living/1000));
 		if (numberStarve == 1) { 
-			gameLog("A worker starved to death"); 
+			gameLog("A Worker starved to death"); 
 		} else if (numberStarve > 1) { 
-			gameLog(prettify(numberStarve) + " citizens starved to death"); 
+			gameLog(prettify(numberStarve) + " Workers starved to death"); 
 		}
 		adjustMorale(-0.01);
 		civData.food.owned = 0;
@@ -1068,8 +1038,6 @@ function killUnit (unit) {
 // Returns the actual number created or destroyed (negative if destroyed).
 function raiseDead(num){
 	if (num === undefined) { num = 1; }
-	if (num == "custom") { num = getCustomNumber(civData.unemployed); }
-	if (num == "-custom") { num = -getCustomNumber(civData.unemployed); }
 
 	// Find the most zombies we can raise
 	num = Math.min(num, civData.corpse.owned);
@@ -1978,7 +1946,6 @@ function load (loadType) {
 	var loadVar = {},
 		loadVar2 = {},
 		settingsVar = {};
-	var saveVersion = new VersionData(1,0,0,"legacy");
 
 	if (loadType === "cookie") {
 		//check for cookies
@@ -2040,28 +2007,7 @@ function load (loadType) {
 		loadVar = importByInput(ui.find("#impexpField"));
 	}
 
-	saveVersion = mergeObj(saveVersion, loadVar.versionData);
-	if (saveVersion.toNumber() > versionData.toNumber()) {
-		// Refuse to load saved games from future versions.
-		var alertStr = "Cannot load; saved game version " + saveVersion + " is newer than game version " + versionData;
-		console.log(alertStr);
-		alert(alertStr);
-		return false;
-	} 
-	if (saveVersion.toNumber() < versionData.toNumber()) {
-		// Migrate saved game data from older versions.
-		var settingsVarReturn = { val: {} };
-		migrateGameData(loadVar, settingsVarReturn);
-		settingsVar = settingsVarReturn.val;
-
-		// Merge the loaded data into our own, in case we've added fields.
-		mergeObj(curCiv, loadVar.curCiv);
-	} else {
-		curCiv = loadVar.curCiv; // No need to merge if the versions match; this is quicker.
-	}
-
-	console.log("Loaded save game version " + saveVersion.major +
-		"." + saveVersion.minor + "." + saveVersion.sub + "(" + saveVersion.mod + ") via", loadType);
+    curCiv = loadVar.curCiv; // No need to merge if the versions match; this is quicker.
 
 	if (isValid(settingsVar)){ settings = mergeObj(settings,settingsVar); }
  
@@ -2123,7 +2069,6 @@ function save(savetype){
 	var xmlhttp;
 
 	var saveVar = {
-		versionData:versionData, // Version information header
 		curCiv:curCiv // Game data
 	};
 
@@ -2917,38 +2862,6 @@ function tickGrace() {
 
 //========== UI functions
 
-// Called when user switches between the various panes on the left hand side of the interface
-// Returns the target pane element.
-function paneSelect(control){
-	var i,oldTarget;
-
-	// Identify the target pane to be activated, and the currently active
-	// selector tab(s).
-	var newTarget = dataset(control,"target");
-	var selectors = ui.find("#selectors");
-	if (!selectors) { console.log("No selectors found"); return null; }
-	var curSelects = selectors.getElementsByClassName("selected");
-
-	// Deselect the old panels.
-	for (i = 0; i < curSelects.length; ++i) { 
-		oldTarget = dataset(curSelects[i],"target");
-		if (oldTarget == newTarget) { continue; }
-		document.getElementById(oldTarget).classList.remove("selected");
-		curSelects[i].classList.remove("selected");
-	}
-
-	// Select the new panel.
-	control.classList.add("selected");
-	var targetElem = document.getElementById(newTarget);
-	if (targetElem) { targetElem.classList.add("selected"); }
-	return targetElem;
-}
-
-function versionAlert(){
-	console.log("New Version Available");
-	ui.find("#versionAlert").style.display = "inline";
-}
-
 function prettify(input){
 	//xxx TODO: Add appropriate format options
 	return Number(input).toLocaleString()
@@ -3012,11 +2925,6 @@ function setCustomQuantities(value){
 	for (i = 0; i < elems.length; ++i) { 
 		ui.show(elems[i],!settings.customIncr && (curPop >= 10000)); 
 	}
-
-	elems = document.getElementsByClassName("buycustom");
-	for (i = 0; i < elems.length; ++i) { 
-		ui.show(elems[i],settings.customIncr); 
-	}
 }
 
 // Toggles the display of the .notes class
@@ -3069,23 +2977,6 @@ function setIcons(value){
 }
 function onToggleIcons(control){ 
 	return setIcons(control.checked); 
-}
-
-function setWorksafe(value){
-	if (value !== undefined) { settings.worksafe = value; }
-	ui.find("#toggleWorksafe").checked = settings.worksafe;
-
-	//xxx Should this be applied to the document instead of the body?
-	if (settings.worksafe){
-		ui.body.classList.remove("hasBackground");
-	} else {
-		ui.body.classList.add("hasBackground");
-	}
-
-	setIcons(); // Worksafe overrides icon settings.
-}
-function onToggleWorksafe(control){ 
-	return setWorksafe(control.checked); 
 }
 
 
@@ -3261,7 +3152,6 @@ setup.civSizes = function () {
 
 setup.game = function () {
 	console.log("Setting up game");
-	//document.title = "CivClicker ("+versionData+")"; //xxx Not in XML DOM.
 
 	addUITable(basicResources, "basicResources"); // Dynamically create the basic resource table.
 	addUITable(homeBuildings, "buildings"); // Dynamically create the building controls table.

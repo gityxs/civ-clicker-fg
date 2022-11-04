@@ -1,16 +1,4 @@
-
-function VersionData(major,minor,sub,mod) {
-	this.major = major;
-	this.minor = minor;
-	this.sub = sub;
-	this.mod = mod;
-}
-VersionData.prototype.toNumber = function() { return this.major*1000 + this.minor + this.sub/1000; };
-VersionData.prototype.toString = function() { return String(this.major) + "." 
-	+ String(this.minor) + "." + String(this.sub) + String(this.mod); };
-
-// TODO: Create a mechanism to automate the creation of a class hierarchy,
-// specifying base class, shared props, instance props.
+//---
 function CivObj(props, asProto)
 {
 	if (!(this instanceof CivObj)) { return new CivObj(props); } // Prevent accidental namespace pollution
@@ -73,7 +61,7 @@ CivObj.prototype = {
 	getQtyName: function(qty) { 
 		if (qty === 1 && this.singular) { return this.singular.charAt(0).toUpperCase() + this.singular.slice(1); }
 		if (typeof qty == "number" && this.plural) { return this.plural.charAt(0).toUpperCase() + this.plural.slice(1); }
-		return this.name || this.singular.charAt(0).toUpperCase() + this.singular.slice(1) || "(UNNAMED)";
+		return (this.name ? this.name.charAt(0).toUpperCase() + this.name.slice(1) : false) || this.singular.charAt(0).toUpperCase() + this.singular.slice(1) || "(UNNAMED)";
 	}
 };
 
