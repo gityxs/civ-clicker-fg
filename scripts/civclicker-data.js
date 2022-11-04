@@ -804,6 +804,14 @@ function getCivData() {
             efficiency:0.05,
             effectText:"Defending enemy troops",
         }),
+        new Unit({ id:"efort", species:"mechanical",
+            singular:"fortification", plural:"fortifications",
+            alignment:"enemy",
+            prereqs: undefined,
+            efficiency: 0.01,
+            place: "party",
+            effectText:"Reduce enemy casualties",
+        }),
         
         //--- achievements
         new Achievement({id:"raiderAch",
