@@ -47,12 +47,9 @@ var curCiv = {
 	deities : [ { name:"", domain:"", maxDev:0 } ],
 }
 //---
-var population = { current:	0, living: 0, zombie: 0, limit: 0, healthy:	0, totalSick: 0 }
+var population = { current:	0, living: 0, limit: 0, healthy: 0, totalSick: 0 }
 //---
 var civData = getCivData()
-//---
-var wonderCount = {}
-var wonderResources = getWonderResources(civData)
 //---
 var settings = { autosave: true, autosaveCounter: 1, autosaveTime: 60, customIncr: false, fontSize: 1.0, delimiters: true, textShadow: false, notes: true, worksafe: false, useIcons: true }
 
@@ -89,173 +86,160 @@ function buildInternalLists(civData) {
 		}        
 		else if (elem.type == "building") {
             
-			buildingData.push(elem); 
-			if (elem.vulnerable === true) { sackable.push(elem); }
-			if (elem.subType == "normal" || elem.subType == "land") { homeBuildings.push(elem); } 
+			buildingData.push(elem)
+            
+			if (elem.vulnerable === true) { sackable.push(elem) }
+			if (elem.subType == "normal" || elem.subType == "land") { homeBuildings.push(elem) } 
 		}
         else if (elem.type == "upgrade") {
             
-			upgradeData.push(elem)
-            
-			if (elem.subType == "upgrade") { 
-				normalUpgrades.push(elem); 
-			}
-            if (elem.subType == "prayer") {
+            if (elem.subType == "prayer") { powerData.push(elem) }
+			else {
                 
-                powerData.push(elem)
+                upgradeData.push(elem)
+                if (elem.subType == "upgrade") { normalUpgrades.push(elem) }
             }
 		}
-		else if (elem.type == "unit") { 
-			unitData.push(elem); 
-			if (elem.vulnerable === true) { killable.push(elem); }
-			if (elem.place == "home") { homeUnits.push(elem); }
-			if (elem.place == "party") { armyUnits.push(elem); } 
+		else if (elem.type == "unit") {
+            
+			unitData.push(elem)
+            
+			if (elem.vulnerable === true) { killable.push(elem) }
+			if (elem.place == "home") { homeUnits.push(elem) }
+			else if (elem.place == "party") { armyUnits.push(elem) } 
 		}
-		else if (elem.type == "achievement") { 
+		else if (elem.type == "achievement") {
+        
 			achData.push(elem); 
 		}
 	})
 }
 
-
+//---
 function calculatePopulation () {
 
-	population = {
-		current:	0,
-		living:		0,
-		zombie:		curCiv.zombie.owned,
-		limit:		0,
-		limitIncludingUndead: 0,
-		healthy:	0,
-		totalSick:	0,
-	};
+	population = { current:	0, living: 0, limit: 0, healthy: 0, totalSick: 0 }
 
-	//Update population limit by multiplying out housing numbers
 	population.limit = (
 		civData.tent.owned 
 		+ (civData.hut.owned * 3) 
 		+ (civData.cottage.owned * 6) 
-		+ (civData.house.owned * (10 + ((civData.tenements.owned) * 2) + ((civData.slums.owned) * 2))) 
+		+ (civData.house.owned * (10 + (civData.tenements.owned * 2) + (civData.slums.owned * 2))) 
 		+ (civData.mansion.owned * 50)
-	);
-	population.limitIncludingUndead = population.limit + population.zombie;
+	)
 
-	//Update sick workers
-	unitData.forEach(function(unit) { 
-		if (unit.isPopulation) { // has to be a player, non-special, non-mechanical
-			population.current += unit.owned;
+	unitData.forEach(unit => { 
+		if (unit.isPopulation) {
+            
+			population.current += unit.owned
 			
-			if (unit.vulnerable) {
-				// TODO Should this use 'killable'?
-				population.healthy += unit.owned;
-			}
-			if (unit.ill) {
-				population.totalSick += (unit.ill||0);
-			} else {
-				population.healthy += 1; // TODO: Not sure if this is calculated right
-			}
+			if (unit.ill > 0) { population.totalSick += unit.ill }
 		}
-	});
-	// Calculate housed/fed population (excludes zombies)
-	population.living = Math.max(0, population.current - population.zombie);
-	// Calculate healthy workers (should exclude sick, zombies and deployed units)
-	// TODO: Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
-	population.healthy = Math.max(0, population.healthy - population.zombie);
+	})
 
-	//Zombie soldiers dying can drive population.current negative if they are 
-	// killed and zombies are the only thing left.
-	// TODO: This seems like a hack that should be given a real fix.
-	if (population.current < 0){
-		if (curCiv.zombie.owned > 0){
-			//This fixes that by removing zombies and setting to zero.
-			curCiv.zombie.owned += population.current;
-			population.current = 0;
+	population.living = Math.max(0, population.current - curCiv.zombie.owned)
+
+    population.healthy = population.current - population.totalSick
+	population.healthy = Math.max(0, population.healthy - curCiv.zombie.owned)
+
+	if (population.current < 0) {
+		if (curCiv.zombie.owned > 0) {
+
+			curCiv.zombie.owned += population.current
+			population.current = 0
+            
 		} else {
-			console.warn("Warning: Negative current population detected.");
+            
+			console.warn("Warning: Negative current population detected")
 		}
 	}	
 }
 
-
-function getCivType () {
-	var civType = civSizes.getCivSize(population.living).name;
-	if (population.living === 0 && population.limit >= 1000){
-		civType = "Ghost Town";
-	}
-	if (population.zombie >= 1000 && population.zombie >= 2 * population.living){ //easter egg
-		civType = "Necropolis";
-	}
-	return civType;
+//---
+function getCurDeityDomain() {
+    
+	return (curCiv.deities.length > 0) ? curCiv.deities[0].domain : undefined
 }
 
-
-
-function getCurDeityDomain() { 
-	return (curCiv.deities.length > 0) ? curCiv.deities[0].domain : undefined; 
+//---
+var wonderCount = {}
+var wonderResources = getWonderResources(civData)
+//---
+function computeWonderCount() {
+    
+	wonderCount = {}
+	curCiv.wonders.forEach(elem => {
+        
+		let resourceId = elem.resourceId
+		if (!isValid(wonderCount[resourceId])) { wonderCount[resourceId] = 0 }
+		wonderCount[resourceId] += 1
+	})
+}
+//---
+function getWonderBonus(resourceObj) {
+    
+	if (!resourceObj) { return 1 }
+	return (1 + (wonderCount[resourceObj.id] || 0) / 10)
 }
 
+//---
+function resetRaiding() {
+    
+	curCiv.raid.raiding = false
+	curCiv.raid.victory = false
+	curCiv.raid.epop = 0
+	curCiv.raid.plunderLoot = {}
+	curCiv.raid.last = ""
 
-
-// Tallies the number of each wonder from the wonders array.
-function tallyWonderCount() {
-	wonderCount = {};
-	curCiv.wonders.forEach(function(elem) {
-		var resourceId = elem.resourceId;
-		if (!isValid(wonderCount[resourceId])) { wonderCount[resourceId] = 0; }
-		++wonderCount[resourceId];
-	});
+	unitData.filter(elem => { return elem.alignment == "enemy" && elem.place == "party" })
+			.forEach(elem => { elem.reset() })
 }
 
-// Return the production multiplier from wonders for a resource.
-function getWonderBonus(resourceObj)
-{
-	if (!resourceObj) { return 1; }
-	return (1 + (wonderCount[resourceObj.id]||0)/10);
-}
-
-
-
-
-// Reset the raid data.
-function resetRaiding()
-{
-	curCiv.raid.raiding = false;
-	curCiv.raid.victory = false;
-	curCiv.raid.epop = 0;
-	curCiv.raid.plunderLoot = {};
-	curCiv.raid.last = "";
-
-	// Also reset the enemy party units.
-	unitData.filter(function(elem) { return ((elem.alignment == "enemy") && (elem.place == "party")); })
-			.forEach(function(elem) { elem.reset(); });
-}
-
-
-
+//---
 function playerCombatMods() { 
-	return (0.01 * ((civData.riddle.owned) + (civData.weaponry.owned) + (civData.shields.owned))); 
+	return (0.01 * (civData.riddle.owned + civData.weaponry.owned + civData.shields.owned))
 }
 
-// Get an object's requirements in text form.
-// Pass it a cost object and optional quantity
-function getReqText(costObj, qty)
-{
-	if (!isValid(qty)) { qty = 1 }
-	costObj = valOf(costObj, qty)
+//---
+function getCostHtml(costObj) {
+    
 	if (!isValid(costObj)) { return "" }
 
-	var i, num;
-	var text = ""
-	for(i in costObj)
-	{
-		// If the cost is a function, eval it with qty as a param.  Otherwise
-		// just multiply by qty.
-		num = (typeof costObj[i] == "function") ? (costObj[i](qty)) : (costObj[i]*qty);
-		if (!num) { continue; }
-		text += "<div class='col-auto'><img src='images/" + i + ".png' class='icon-sm' alt='" + civData[i].getQtyName(num) + "'> " + prettify(Math.round(num)) + "</div>"
+	let html = ""
+	for (let costId in costObj) {
+
+		let costCount = (typeof costObj[costId] == "function") ? costObj[costId](1) : costObj[costId]
+		if (!costCount) { continue }
+		html += "<div class='col-auto'><img src='images/" + costId + ".png' class='icon-sm' alt='" + civData[costId].getQtyName(costCount) + "'> " + prettify(Math.round(costCount)) + "</div>"
 	}
 
-	return text;
+	return html
+}
+//---
+function getCostNote(objDef) {
+
+	var costHtml = getCostHtml(objDef.require)
+	return "<div id='" + objDef.id + "Cost' class='row gx-2 align-items-center justify-content-end cost'>" + costHtml + "</div>"
+}
+//---
+function getBasicResourceHtml(objDef) {
+
+	let objId = objDef.id
+	let objName = objDef.getQtyName(0)
+    
+	let txt = ( ''
+		+ '<div class="col-12">'
+            + '<div id="'+ objId + 'Row" class="row gx-2 align-items-center" data-target="'+ objId + '" style="height:30px;">'
+                + '<div class="col-auto"><img src="images/' + objId + '.png" class="icon-lg" alt="' + objName + '"/></div>'
+                + '<div class="col-auto" style="width:85px;"><button data-action="increment" class="w-100 text-capitalize">' + objDef.verb + '</button></div>'
+                + '<div class="col"><span class="text-capitalize">' + objName + '</span></div>'
+                + '<div class="col-auto"><span data-action="display"></span></div>'
+                + '<div class="col-auto"><small id="max' + objId + '" class="opacity-50"></small></div>'
+                + '<div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>'
+            + '</div>'
+		+ '</div>'
+	)
+	return txt
 }
 
 // Returns when the player meets the given upgrade prereqs.
@@ -371,13 +355,6 @@ function canPurchase (purchaseObj, qty) {
 	return Math.min(qty, canAfford(purchaseObj.require));
 }
 
-// Generate two HTML <span> texts to display an item's cost and effect note.
-function getCostNote(civObj)
-{
-	// Only add a ":" if both items are present.
-	var reqText = getReqText(civObj.require);
-	return "<div id='"+civObj.id+"Cost' class='row gx-2 align-items-center justify-content-end cost'>" + reqText + "</div>"
-}
 
 // Number format utility functions.
 // - Allows testing the sign of strings that might be prefixed with '-' (like "-custom")
@@ -394,29 +371,9 @@ function sgn(x) { return (typeof x == "number") ? sgnnum(x)
 function abs(x) { return (typeof x == "number") ? Math.abs(x) : (typeof x == "string") ? absstr(x) : x; }
 
 
-//---------------------------------------------------------------------------------------------
-function htmlTextBasicResource(objDef) {
-
-	let objId = objDef.id
-	let objName = objDef.getQtyName(0)
-    
-	let txt = ( ''
-		+ '<div class="col-12">'
-            + '<div id="'+ objId + 'Row" class="row gx-2 align-items-center" data-target="'+ objId + '" style="height:30px;">'
-                + '<div class="col-auto"><img src="images/' + objId + '.png" class="icon-lg" alt="' + objName + '"/></div>'
-                + '<div class="col-auto" style="width:85px;"><button data-action="increment" class="w-100 text-capitalize">' + objDef.verb + '</button></div>'
-                + '<div class="col"><span class="text-capitalize">' + objName + '</span></div>'
-                + '<div class="col-auto"><span data-action="display"></span></div>'
-                + '<div class="col-auto"><small id="max' + objId + '" class="opacity-50"></small></div>'
-                + '<div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>'
-            + '</div>'
-		+ '</div>'
-	)
-	return txt
-}
 
 //---------------------------------------------------------------------------------------------
-function htmlButtonPurchase(purchaseObj, qty, inTable) {
+function htmlButtonPurchase(purchaseObj, qty) {
 
 	function sgnchr(x) { return (x > 0) ? '+' : (x < 0) ? '-' : '' }
 
@@ -515,7 +472,7 @@ function addUITable(civObjs, groupElemName)
 {
 	var s="";
 	civObjs.forEach(function(elem) { 
-		s += elem.type == "resource" ? htmlTextBasicResource(elem) 
+		s += elem.type == "resource" ? getBasicResourceHtml(elem) 
 				: elem.type == "upgrade"  ? getUpgradeRowText(elem) 
 					: htmlTextPurchase(elem); 
 	});
@@ -549,7 +506,7 @@ function getUpgradeRowText(upgradeObj, inTable)
             + '</div>'
         + '</div>'
     )
-	s +=    "<div class='col'>" + htmlButtonPurchase(upgradeObj, true, inTable) + "</div>";
+	s +=    "<div class='col'>" + htmlButtonPurchase(upgradeObj, true) + "</div>";
 	s +=    "<div class='col-auto'>" + getCostNote(upgradeObj) + "</div>";
 	s +=    "</div></div>";
 	return s;
@@ -671,7 +628,7 @@ function getDeityRowText(deityId, deityObj)
 
 	return (""
     + "<div id='" + deityId + "' class='col-12'>"
-        + "<div class='row gx-2 align-items-center'>"
+        + "<div class='row gx-2 align-items-center' style='height:25px;'>"
             + "<div class='col'><strong><span id='" + deityId + "Name'>" + deityObj.name + "</span></strong></div>"
             + "<div class='col-auto'><span id=" + deityId + "Domain' class='deityDomain'>" + idToType(deityObj.domain) + "</span></div>"
             + "<div class='col-auto text-end' style='width:125px;'><span id='" + deityId + "Devotion'>" + deityObj.maxDev + "</span> Devotion</div>"
@@ -795,7 +752,7 @@ function doPurchase(objId,num){
 
 	//Then increment the total number of that building
 	// Do the actual purchase; coerce to the proper type if needed
-	purchaseObj.owned = matchType(purchaseObj.owned + num,purchaseObj.initOwned);
+	purchaseObj.owned = matchType(purchaseObj.owned + num, purchaseObj.initOwned);
 	if (purchaseObj.source) { civData[purchaseObj.source].owned -= num; }
 
 	// Post-purchase triggers
@@ -856,7 +813,7 @@ function calcWorkerCost(num, curPop){
 	return (20*num) + calcArithSum(0.01, curPop, curPop + num);
 }
 function calcZombieCost(num){ 
-	return calcWorkerCost(num, population.zombie)/5; 
+	return calcWorkerCost(num, curCiv.zombie.owned)/5; 
 }
 
 
@@ -1270,8 +1227,9 @@ function plunder () {
 
 	// Create message to notify player
 	plunderMsg = civSizes[curCiv.raid.last].name + " defeated! ";
-	plunderMsg += "Plundered " + getReqText(curCiv.raid.plunderLoot) + ". ";
-	gameLog(plunderMsg);
+	gameLog(plunderMsg)
+    
+	plunderMsg += "Plundered <div class='row gx-2'>" + getCostHtml(curCiv.raid.plunderLoot) + "</div>";
 
 	ui.show(raidNewsElt, true);
 	raidNewsElt.innerHTML = "Results of last raid: " + plunderMsg;
@@ -1951,7 +1909,7 @@ function load(loadType) {
 	updatePartyButtons();
 	updateMorale();
 	updateWonder();
-	tallyWonderCount();
+	computeWonderCount();
 	ui.find("#clicks").innerHTML = prettify(Math.round(curCiv.resourceClicks));
 	ui.find("#civName").innerHTML = curCiv.civName;
 	ui.find("#rulerName").innerHTML = curCiv.rulerName;

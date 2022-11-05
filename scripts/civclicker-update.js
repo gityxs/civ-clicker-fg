@@ -56,6 +56,7 @@ function updateAfterReset () {
 	updateJobButtons();
 	updatePartyButtons();
 	updateWonder();
+    updatePopulation();
 	//Reset upgrades and other interface elements that might have been unlocked
 	//xxx Some of this probably isn't needed anymore; the update routines will handle it.
 	ui.find("#renameDeity").disabled = "true";
@@ -87,6 +88,24 @@ function updateAfterReset () {
 	ui.find("#tradeUpgradeContainer").style.display = "none";
 	ui.find("#iconoclasmList").innerHTML = "";
 	ui.find("#iconoclasm").disabled = false;
+
+    let elems = document.getElementsByClassName("unit10")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
+    elems = document.getElementsByClassName("unit100")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
+    elems = document.getElementsByClassName("unit1000")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }    
+    elems = document.getElementsByClassName("unitInfinity")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
+
+    elems = document.getElementsByClassName("building10")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
+    elems = document.getElementsByClassName("building100")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
+    elems = document.getElementsByClassName("building1000")
+    for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
+    
+    ui.show(("#purchasedUpgradesGroup"), false)
 }
 
 function updateTrader () {
@@ -107,7 +126,7 @@ function updateTrader () {
 //xxx This should become an onGain() member method of the building classes
 function updateRequirements(buildingObj){
 	var displayNode = document.getElementById(buildingObj.id + "Cost");
-	if (displayNode) { displayNode.innerHTML = getReqText(buildingObj.require); }
+	if (displayNode) { displayNode.innerHTML = getCostHtml(buildingObj.require); }
 }
 
 function updatePurchaseRow (purchaseObj) {
@@ -224,6 +243,15 @@ function updateResourceTotals(){
 
 	// Cheaters don't get names.
 	ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
+}
+
+function getCivType() {
+    
+	var civType = civSizes.getCivSize(population.living).name
+	if (population.living === 0 && population.limit >= 1000) { civType = "Ghost Town" }
+	if (curCiv.zombie.owned >= 1000 && curCiv.zombie.owned >= 2 * population.living) { civType = "Necropolis" }
+    
+	return civType
 }
 
 //Update page with numbers
@@ -433,6 +461,8 @@ function updateDevotion(){
 	}
 
 	ui.find("#ceaseWalk").disabled = (civData.walk.rate === 0);
+
+    ui.find("#iconoclasm").disabled = civData.gold.owned < 1000 ? true : false
 }
 
 // Dynamically create the achievement display
