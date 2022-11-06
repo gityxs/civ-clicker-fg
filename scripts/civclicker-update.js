@@ -588,7 +588,7 @@ function updateWonder () {
 	}
 
 	// Display this section if we have any wonders or could build one.
-	ui.show("#wondersContainer",(haveTech && curCiv.curWonder.stage === 0 ));
+	ui.show("#wondersContainer",(haveTech || curCiv.wonders.length > 0));
 
 	// Can start building a wonder, but haven't yet.
 	ui.show("#startWonderLine",(haveTech && curCiv.curWonder.stage === 0 ));
