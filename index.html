@@ -340,7 +340,7 @@
                                                         </div>
                                                         <!-- -->
                                                         <div id="wondersContainer" class="col-12" style="display: none;">
-                                                            <h6 class="ff-suezOne">Wonders</h6>
+                                                            <h6 class="ff-suezOne">Current Wonder</h6>
                                                             <div class="row g-1">
                                                                 <!-- -->
                                                                 <div id="startWonderLine" class="col-12" style="display: none;">
@@ -394,10 +394,13 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <!-- -->
-                                                                <div id="pastWonders" class="col-12">
-                                                                    <!-- populated by javascript -->
-                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- -->
+                                                        <div id="pastWondersContainer" class="col-12" style="display: none;">
+                                                            <h6 class="ff-suezOne">Wonders</h6>
+                                                            <div id="pastWonders">
+                                                                <!-- populated by javascript -->
                                                             </div>
                                                         </div>
                                                         <!-- -->
@@ -843,7 +846,7 @@
         <script>
             function checkVersion() {
                 
-                let currentTagName = "0.009"
+                let currentTagName = "0.010"
                 ajax.get("https://api.github.com/repos/freddecgames/civclickerbyfg/releases/latest", function(responseText, response) {
                 
                     let latestTagName = response.tag_name

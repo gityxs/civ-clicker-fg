@@ -15,19 +15,32 @@ function updateAll () {
 };
 
 function updateWonderList(){
-	if (curCiv.wonders.length === 0) { return; }
+    
+	if (curCiv.wonders.length === 0) {
+        ui.show("#pastWondersContainer", false)
+        return
+    }
 
-	var i;
-	//update wonder list
-	var wonderhtml = "<tr><td><strong>Name</strong></td><td><strong>Type</strong></td></tr>";
-	for (i=(curCiv.wonders.length - 1); i >= 0; --i){
+    ui.show("#pastWondersContainer", true)
+        
+	var html = "<div class='row gx-3 gy-1'>"
+	for (let i = (curCiv.wonders.length - 1); i >= 0; --i) {
 		try {
-			wonderhtml += "<tr><td>"+curCiv.wonders[i].name+"</td><td>"+curCiv.wonders[i].resourceId+"</td></tr>";
+            
+            html += "<div class='col-auto'>"
+                html += "<span class='text-success me-1'>+10%</span>"
+                html += "<img src='images/" + curCiv.wonders[i].resourceId + ".png' class='icon-sm' alt='" + curCiv.wonders[i].resourceId + "'>"
+                html += "<span class='text-capitalize ms-1'>" + curCiv.wonders[i].resourceId + "</span>"
+            html += "</div>"
+            
 		} catch(err) {
-			console.log("Could not build wonder row " + i);
+            
+			console.log("Could not build wonder row " + i)
 		}
 	}
-	ui.find("#pastWonders").innerHTML = wonderhtml;
+    html += "</div>"
+    
+	ui.find("#pastWonders").innerHTML = html
 }
 
 function updateReset(){
@@ -349,9 +362,6 @@ function updatePopulation (calc) {
 	ui.find("#raiseDeadMax").disabled = (maxRaise < 1);
 	ui.find("#raiseDead100").disabled = (maxRaise < 100);
 
-	//Calculates and displays the cost of buying workers at the current population
-	//ui.find("#raiseDeadCost").innerHTML = prettify(Math.round(calcZombieCost(1)));
-
 	ui.find("#workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
 
 	spawn1button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1))) + " food";
@@ -578,7 +588,7 @@ function updateWonder () {
 	}
 
 	// Display this section if we have any wonders or could build one.
-	ui.show("#wondersContainer",(haveTech || curCiv.wonders.length > 0));
+	ui.show("#wondersContainer",(haveTech && curCiv.curWonder.stage === 0 ));
 
 	// Can start building a wonder, but haven't yet.
 	ui.show("#startWonderLine",(haveTech && curCiv.curWonder.stage === 0 ));
