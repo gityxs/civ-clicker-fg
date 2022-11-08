@@ -558,7 +558,7 @@
                                                                     <div class="row gx-2 align-items-center">
                                                                         <div class="col-auto"><div class="dropdown"><a href="#" class="text-muted" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-fw fa-info-circle" aria-hidden="true"></i></a><div class="dropdown-menu" style="min-width: max-content;">Remove an old deity to gain gold</div></div></div>
                                                                         <div class="col"><button id="iconoclasm" onmousedown="iconoclasmList()">Iconoclasm</button></div>
-                                                                        <div class="col-auto"><img src="images/piety.png" class="icon-sm" alt="piety"> 1 000</div>
+                                                                        <div class="col-auto"><img src="images/gold.png" class="icon-sm" alt="gold"> 1 000</div>
                                                                     </div>
                                                                 </div>
                                                                 <!-- -->
@@ -846,7 +846,7 @@
         <script>
             function checkVersion() {
                 
-                let currentTagName = "0.011"
+                let currentTagName = "0.012"
                 ajax.get("https://api.github.com/repos/freddecgames/civclickerbyfg/releases/latest", function(responseText, response) {
                 
                     let latestTagName = response.tag_name

@@ -642,7 +642,7 @@ function testAchievements(){
 		if (civData[achObj.id].owned) { return true; }
 		if (isValid(achObj.test) && !achObj.test()) { return false; }
 		civData[achObj.id].owned = true;
-		gameLog("Achievement Unlocked: "+achObj.getQtyName());
+		gameLog("<span class='text-success'>Achievement Unlocked: "+achObj.getQtyName() + "</span>");
 		return true;
 	});
 
@@ -686,7 +686,7 @@ function increment (objId) {
 			var specialMaterial = civData[purchaseObj.specialMaterial];
 			var specialQty =  purchaseObj.increment * (1 + (9 * (civData.guilds.owned)));
 			specialMaterial.owned += specialQty;
-			gameLog("Found " + specialMaterial.getQtyName(specialQty) + " while " + purchaseObj.activity); // I18N
+			gameLog("<span class='text-success'>Found " + specialMaterial.getQtyName(specialQty) + " while " + purchaseObj.activity + "</span>"); // I18N
 		}
 	}
 	//Checks to see that resources are not exceeding their limits
@@ -784,7 +784,7 @@ function calcWorkerCost(num, curPop){
 	if (curPop === undefined) { 
 		curPop = population.living;
 	}
-	return (20*num) + calcArithSum(0.01, curPop, curPop + num);
+	return (20*num) + calcArithSum(0.001, curPop, curPop + num);
 }
 function calcZombieCost(num){ 
 	return calcWorkerCost(num, curCiv.zombie.owned)/5; 
@@ -2268,13 +2268,13 @@ function doPlague () {
 
 	if (deathRoll <= 5) { // 5% chance that 1 person dies
 		killUnit(unitInfected);
-		gameLog("A sick " + unitInfected.getQtyName(1) + " dies.");
+		gameLog("<span class='text-danger'>A sick " + unitInfected.getQtyName(1) + " dies</span>");
 		// TODO: Decrease happiness
 		calculatePopulation();
 		return true;
 	} else if (deathRoll > 99.9) { // 0.1% chance that it spreads to a new person
 		spreadPlague(1);
-		gameLog("The sickness spreads to a new worker.");
+		gameLog("<span class='text-warning'>The sickness spreads to a new worker</span>");
 		return true;
 	} else {
 
@@ -2315,7 +2315,7 @@ function docorpse() {
 	infected = spreadPlague(infected);
 	if (infected > 0) {
 		calculatePopulation();
-		gameLog(prettify(infected) + " Workers got sick"); //notify player
+		gameLog("<span class='text-warning'>" + prettify(infected) + " Workers got sick</span>"); //notify player
 	}
 
 	// Corpse has a 50-50 chance of decaying (at least there is a bright side)
@@ -2389,7 +2389,7 @@ function doSlaughter(attacker)
 			if (attacker.species != "animal") { 
 				civData.corpse.owned += 1; 
 			} 
-			gameLog(targetUnit.getQtyName(1) + " " + killVerb + " by " + attacker.getQtyName(attacker.owned));
+			gameLog("<span class='text-danger'>" + targetUnit.getQtyName(1) + " " + killVerb + " by " + attacker.getQtyName(attacker.owned) + "</span>");
 		}
 	} else { // Attackers slowly leave once everyone is dead
 		var leaving = Math.ceil(attacker.owned * Math.random() * attacker.killFatigue);
@@ -2404,8 +2404,7 @@ function doLoot(attacker)
 	var target = lootable[Math.floor(Math.random() * lootable.length)];
 	var stolenQty = Math.floor((Math.random() * 1000)); //Steal up to 1000.
 	stolenQty = Math.min(stolenQty,target.owned);
-	if (stolenQty > 0) { gameLog(stolenQty + " " + target.getQtyName(stolenQty) 
-						 + " stolen by " + attacker.getQtyName(attacker.owned)); }
+	if (stolenQty > 0) { gameLog("<span class='text-danger'>" + stolenQty + " " + target.getQtyName(stolenQty) + " stolen by " + attacker.getQtyName(attacker.owned) + "</span>") }
 	target.owned -= stolenQty;
 	if (target.owned <= 0) {
 		//some will leave
@@ -2429,7 +2428,7 @@ function doSack(attacker)
 	if (target.owned > 0){
 		--target.owned;
 		++civData.freeLand.owned;
-		gameLog(target.getQtyName(1) + " " + destroyVerb + " by " + attacker.getQtyName(attacker.owned));
+		gameLog("<span class='text-danger'>" + target.getQtyName(1) + " " + destroyVerb + " by " + attacker.getQtyName(attacker.owned) + "</span>");
 	} else {
 		//some will leave
 		var leaving = Math.ceil(attacker.owned * Math.random() * (1/112));
@@ -2478,7 +2477,7 @@ function doEsiege(siegeObj, targetObj)
 	{
 		//the siege engines are undefended; maybe capture them.
 		if ((targetObj.alignment == "player") && civData.mathematics.owned){ //Can we use them?
-			gameLog("Captured " + prettify(siegeObj.owned) + " enemy siege engines.");
+			gameLog("<span class='text-success'>Captured " + prettify(siegeObj.owned) + " enemy siege engines</span>");
 			civData.siege.owned += siegeObj.owned; //capture them
 		}
 		siegeObj.owned = 0;
@@ -2486,7 +2485,7 @@ function doEsiege(siegeObj, targetObj)
 	else if (doSiege(siegeObj, targetObj) > 0) {
 		if (targetObj.id === "fortification") {
 			updateRequirements(targetObj);
-			gameLog("Enemy siege engine damaged our fortifications");
+			gameLog("<span class='text-warning'>Enemy siege engine damaged our fortifications</span>");
 		}
 	}
 }
@@ -2524,7 +2523,7 @@ function doRaid(place, attackerID, defenderID) {
 		unitData.filter(function(elem) { return ((elem.alignment == defenderID) && (elem.place == place)); })
 		  .forEach(function(elem) { elem.owned = 0; });
 
-		if (!curCiv.raid.victory) { gameLog("Raid victorious!"); } // Notify player on initial win.
+		if (!curCiv.raid.victory) { gameLog("<span class='text-success'>Raid victorious</span>"); } // Notify player on initial win.
 		curCiv.raid.victory = true;  // Flag victory for future handling
 	}
 
@@ -2534,7 +2533,7 @@ function doRaid(place, attackerID, defenderID) {
 		unitData.filter(function(elem) { return ((elem.alignment == attackerID) && (elem.place == place)); })
 		  .forEach(function(elem) { elem.owned = 0; });
 
-		gameLog("Raid defeated");  // Notify player
+		gameLog("<span class='text-danger'>Raid defeated</span>");  // Notify player
 		resetRaiding();
 		return;
 	}
