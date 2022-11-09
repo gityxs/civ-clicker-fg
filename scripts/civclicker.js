@@ -210,7 +210,7 @@ function getCostHtml(costObj) {
 
 		let costCount = (typeof costObj[costId] == "function") ? costObj[costId](1) : costObj[costId]
 		if (!costCount) { continue }
-		html += "<div class='col-auto'><img src='images/" + costId + ".png' class='icon-sm' alt='" + civData[costId].getQtyName(costCount) + "'> " + prettify(Math.round(costCount)) + "</div>"
+		html += "<div class='col-auto'><img src='images/" + costId + ".png' class='icon-sm' alt='" + civData[costId].getQtyName(costCount) + "' data-bs-toggle='tooltip' data-bs-title='" + civData[costId].getQtyName(costCount) + "' /> " + prettify(Math.round(costCount)) + "</div>"
 	}
 
 	return html
@@ -230,12 +230,12 @@ function getBasicResourceHtml(objDef) {
 	let txt = ( ''
 		+ '<div class="col-12">'
             + '<div id="'+ objId + 'Row" class="row gx-2 align-items-center" data-target="'+ objId + '" style="height:30px;">'
-                + '<div class="col-auto"><img src="images/' + objId + '.png" class="icon-lg" alt="' + objName + '"/></div>'
+                + '<div class="col-auto"><img src="images/' + objId + '.png" class="icon-lg" alt="' + objName + '" data-bs-toggle="tooltip" data-bs-title="' + objName + '" /></div>'
                 + '<div class="col-auto" style="width:85px;"><button data-action="increment" class="w-100 text-capitalize">' + objDef.verb + '</button></div>'
                 + '<div class="col"><span class="text-capitalize">' + objName + '</span></div>'
                 + '<div class="col-auto"><span data-action="display"></span></div>'
                 + '<div class="col-auto"><small id="max' + objId + '" class="opacity-50"></small></div>'
-                + '<div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>'
+                + '<div class="col-auto text-end" style="width:85px;"><span data-action="displayNet"></span></div>'
             + '</div>'
 		+ '</div>'
 	)
@@ -378,8 +378,7 @@ function getPantheonUpgradeRowText(upgradeObj)
     s += "<div class='col'><button id='"+upgradeObj.id+"' class='xtrue'";
 	s += " data-action='purchase' data-quantity='true' data-target="+upgradeObj.id;
 	s += " disabled='disabled' onmousedown=\"";
-	// The event handler can take three forms, depending on whether this is
-	// an altar, a prayer, or a pantheon upgrade.
+
 	s += ((upgradeObj.subType == "prayer") ? (upgradeObj.id+"()")
 										   : ("onPurchase(this)"));
 	s += "\">" + upgradeObj.getQtyName() + "</button></div>";
@@ -1100,7 +1099,7 @@ function spawnMob(mobObj, num){
 
 	msg = prettify(num) + " " + mobObj.getQtyName(num) + " attacked";  //xxx L10N
 	if (num_sge > 0) { msg += ", with " + prettify(num_sge) + " " + civData.esiege.getQtyName(num_sge); }  //xxx L10N 
-	gameLog(msg);
+	gameLog("<span class='text-warning'>" + msg + "</span>");
 
 	return num;
 }
@@ -1313,10 +1312,6 @@ function trade(){
 	++civData.gold.owned;
 	updateResourceTotals();
 	gameLog("Traded " + curCiv.trader.requested + " " + material.getQtyName(curCiv.trader.requested));
-}
-
-function isTraderHere () {
-	return (curCiv.trader.timer > 0);
 }
 
 function buy (materialId){
@@ -2704,34 +2699,35 @@ function setAutosave(value){
 }
 function onToggleAutosave(control){ return setAutosave(control.checked); }
 
+function gameLog(message) {
 
-//Not strictly a debug function so much as it is letting the user know when 
-//something happens without needing to watch the console.
-function gameLog(message){
-	//get the current date, extract the current time in HH.MM format
-	//xxx It would be nice to use Date.getLocaleTimeString(locale,options) here, but most browsers don't allow the options yet.
-	var d = new Date();
-	var curTime = d.getHours() + ":" + ((d.getMinutes() < 10) ? "0": "") + d.getMinutes();
+	let d = new Date()
+	let curTime = d.getHours() + ":" + ((d.getMinutes() < 10) ? "0": "") + d.getMinutes()
 
-	//Check to see if the last message was the same as this one, if so just increment the (xNumber) value
 	if (ui.find("#logL").innerHTML != message) {
-		logRepeat = 0; //Reset the (xNumber) value
+        
+		logRepeat = 0
 
-		//Go through all the logs in order, moving them down one and successively overwriting them.
-		var i = 7; // Number of lines of log to keep.
-		while (--i > 1) { ui.find("#log"+i).innerHTML = ui.find("#log"+(i-1)).innerHTML; }
-		//Since ids need to be unique, log1 strips the ids from the log0 elements when copying the contents.
-		ui.find("#log1").innerHTML = (
-			"<td>" + ui.find("#logT").innerHTML 
-			+ "</td><td>" + ui.find("#logL").innerHTML 
-			+ "</td><td>" + ui.find("#logR").innerHTML + "</td>"
-		);
+		let i = 7
+		while (--i > 1) { ui.find("#log" + i).innerHTML = ui.find("#log" + (i - 1)).innerHTML }
+
+		ui.find("#log1").innerHTML = (""
+            + "<div class='row gx-2 align-items-center'>"
+                + "<div class='col-auto' style='width:85px;'>" + ui.find("#logT").innerHTML + "</div>"
+                + "<div class='col'>" + ui.find("#logL").innerHTML + "</div>"
+                + "<div class='col-auto text-end' style='width:35px;'>" + ui.find("#logR").innerHTML + "</div>"
+            + "</div>"
+		)
 	}
-	// Updates most recent line with new time, message, and xNumber.
-	var s =  "<td id='logT'>" + curTime + "</td><td id='logL'>" + message + "</td><td id='logR'>";
-	if (++logRepeat > 1) { s += "x" + logRepeat + ""; } // Optional (xNumber)
-	s += "</td>";
-	ui.find("#log0").innerHTML = s;
+
+	let s = ""
+    s += "<div class='row gx-2 align-items-center'>"
+    s += "<div id='logT' class='col-auto' style='width:85px;'>" + curTime + "</div>"
+    s += "<div id='logL' class='col'>" + message + "</div>"
+	if (++logRepeat > 1) { s += "<div id='logR' class='col-auto text-end' style='width:35px;'>x" + logRepeat + "</div>" }
+    else { s += "<div id='logR' class='col-auto text-end' style='width:35px;'></div>" }
+    s += "</div>"
+	ui.find("#log0").innerHTML = s
 }
 
 function gameLoop () {
@@ -2814,7 +2810,9 @@ setup.all = function () {
 	document.addEventListener("DOMContentLoaded", function(e){
 		setup.game();
 		setup.loop();
-	});
+	})
+    
+    window.onbeforeunload = () => { if (settings.autosave) { save("auto") } }
 };
 
 setup.data = function () {
@@ -2860,6 +2858,9 @@ setup.game = function () {
 	}
 
 	setDefaultSettings();
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 };
 
 setup.loop = function () {
@@ -2867,6 +2868,8 @@ setup.loop = function () {
 	console.log("Setting up Main Loop");
 	gameLoop();
 	window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
+    
+    
 };
 
 setup.all();

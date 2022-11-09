@@ -13,6 +13,14 @@ body {
     background: #22272e;
 }
 
+a {
+    text-decoration: none;
+}
+
+.tooltip {    
+    --bs-tooltip-font-size: .8rem;
+}
+
 :focus-visible {
     outline: none;
 }
@@ -80,8 +88,8 @@ button {
 }
 button:hover:enabled, button:active, button:active:hover {
     border-color: rgba(0, 0, 0, 1);
-    background-color: #cdd9e5;
-    color: #373e47;
+    background-color: #c87f0a;
+    color: #cdd9e5;
 }
 button:disabled {
     cursor: not-allowed;
@@ -131,9 +139,6 @@ button:disabled {
 
 .building10, .building100, .building1000, .buildingInfinity { display: none; }
 .unit10, .unit100, .unit1000, .unitInfinity { display: none; }
-
-#logTable td { padding-right: 20px; }
-#logTable td:last-child { padding-right: 0px; text-align: right; }
 
 .table > :not(caption) > * > * { padding: .125rem 0; }
 

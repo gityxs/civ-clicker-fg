@@ -3,7 +3,7 @@
 function updateAll () {
 	updateTrader();
 	updateUpgrades();
-	updateResourceRows(); //Update resource display
+	updateResourceRows();
 	updateBuildingButtons();
 	updateJobButtons();
 	updatePartyButtons();
@@ -13,6 +13,70 @@ function updateAll () {
 	updateWonder();
 	updateReset();	
 };
+
+//---
+function updateTrader() {
+    
+	var isTraderHere = curCiv.trader.timer > 0
+	if (isTraderHere) {
+        
+		ui.find("#tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested)
+		ui.find("#traderTimer").innerHTML = curCiv.trader.timer + " second" + ((curCiv.trader.timer != 1) ? "s" : "")
+		ui.find("#tradeRequested").innerHTML = prettify(curCiv.trader.requested)
+    }
+    
+	ui.show("#noTrader", !isTraderHere)
+	ui.show("#tradeContainer", isTraderHere)
+	ui.show("#tradeSelect .notif", isTraderHere)
+}
+
+//---
+function updateUpgrades() {
+    
+	var domain = getCurDeityDomain()
+	var hasDomain = (domain === "") ? false : true
+	var canSelectDomain = (civData.worship.owned && !hasDomain)
+
+	upgradeData.forEach(elem => {
+        
+		updatePurchaseRow(elem)
+
+		ui.show(("#P" + elem.id), elem.owned)
+        
+        if (elem.owned) {
+            
+            if (elem.subType == "pantheon") { ui.show(("#pantheonUpgrades"), true) }
+            else { ui.show(("#purchasedUpgradesGroup"), true) }
+        }
+	})
+
+	ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
+	ui.find("#renameDeity").disabled = (!civData.worship.owned);
+	ui.show("#battleUpgrades", (domain == "battle"));
+	ui.show("#fieldsUpgrades", (domain == "fields"));
+	ui.show("#underworldUpgrades", (domain == "underworld"));
+	ui.show("#zombieWorkers", (curCiv.zombie.owned > 0));
+	ui.show("#catsUpgrades", (domain == "cats"));
+
+	ui.show("#deityDomains", canSelectDomain);
+	ui.findAll("#deityDomains button.purchaseFor500Piety").forEach(function(button){
+		button.disabled = (!canSelectDomain || (civData.piety.owned < 500));
+	});
+	ui.show("#deitySelect .alert", canSelectDomain);
+
+	ui.show("#" + domain + "Upgrades", hasDomain);
+
+	// Conquest / battle standard
+	ui.show("#conquest", civData.standard.owned);
+	ui.show("#conquestPane .notYet", (!civData.standard.owned));
+
+	// Trade
+	ui.show("#tradeUpgradeContainer", civData.trade.owned);
+	ui.show("#tradePane .notYet", !civData.trade.owned);
+    ui.findAll("#tradePane .tradeResource").forEach(elem => {
+        elem.disabled = civData.gold.owned < 1
+    })
+}
 
 function updateWonderList(){
     
@@ -29,7 +93,7 @@ function updateWonderList(){
             
             html += "<div class='col-auto'>"
                 html += "<span class='text-success me-1'>+10%</span>"
-                html += "<img src='images/" + curCiv.wonders[i].resourceId + ".png' class='icon-sm' alt='" + curCiv.wonders[i].resourceId + "'>"
+                html += "<img src='images/" + curCiv.wonders[i].resourceId + ".png' class='icon-sm' alt='" + curCiv.wonders[i].resourceId + "' data-bs-toggle='tooltip' data-bs-title='" + curCiv.wonders[i].resourceId + "' />"
                 html += "<span class='text-capitalize ms-1'>" + curCiv.wonders[i].resourceId + "</span>"
             html += "</div>"
             
@@ -119,21 +183,6 @@ function updateAfterReset () {
     for (let i = 0; i < elems.length; i++) { ui.show(elems[i], false) }
     
     ui.show(("#purchasedUpgradesGroup"), false)
-}
-
-function updateTrader () {
-	var isHere = isTraderHere();
-	if (isHere) {
-		ui.find("#tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested);
-		ui.find("#tradeRequested").innerHTML = prettify(curCiv.trader.requested);
-		ui.find("#traderTimer").innerHTML = curCiv.trader.timer + " second" + ((curCiv.trader.timer != 1) ? "s" : "");
-	} else {
-		
-	}
-	ui.show("#tradeContainer", isHere);
-	ui.show("#noTrader", !isHere);
-	ui.show("#tradeSelect .notif", isHere);
-	return isHere;
 }
 
 //xxx This should become an onGain() member method of the building classes
@@ -378,54 +427,7 @@ function updatePopulation (calc) {
 	updateAchievements(); //handles display of achievements
 }
 
-// Check to see if the player has an upgrade and hide as necessary
-// Check also to see if the player can afford an upgrade and enable/disable as necessary
-function updateUpgrades(){
-	var domain = getCurDeityDomain();
-	var hasDomain = (getCurDeityDomain() === "") ? false : true;
-	var canSelectDomain = ((civData.worship.owned) && !hasDomain);
 
-	// Update all of the upgrades
-	upgradeData.forEach( function(elem){ 
-		updatePurchaseRow(elem);  // Update the purchase row.
-
-		// Show the already-purchased line if we've already bought it.
-		ui.show(("#P" + elem.id), elem.owned);
-        
-        if (elem.owned) {
-            if (elem.subType == "pantheon") { ui.show(("#pantheonUpgrades"), true); }
-            else { ui.show(("#purchasedUpgradesGroup"), true); }
-        }
-	});
-
-	// Deity techs
-	ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
-	ui.find("#renameDeity").disabled = (!civData.worship.owned);
-	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
-	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
-	ui.show("#underworldUpgrades", (getCurDeityDomain() == "underworld"));
-	ui.show("#zombieWorkers", (curCiv.zombie.owned > 0));
-	ui.show("#catsUpgrades", (getCurDeityDomain() == "cats"));
-
-	ui.show("#deityDomains", canSelectDomain);
-	ui.findAll("#deityDomains button.purchaseFor500Piety").forEach(function(button){
-		button.disabled = (!canSelectDomain || (civData.piety.owned < 500));
-	});
-	ui.show("#deitySelect .alert", canSelectDomain);
-
-	ui.show("#" + domain + "Upgrades", hasDomain);
-
-	// Conquest / battle standard
-	ui.show("#conquest", civData.standard.owned);
-	ui.show("#conquestPane .notYet", (!civData.standard.owned));
-
-	// Trade
-	ui.show("#tradeUpgradeContainer", civData.trade.owned);
-	ui.show("#tradePane .notYet", !civData.trade.owned);
-    ui.findAll("#tradePane .tradeResource").forEach(elem => {
-        elem.disabled = civData.gold.owned < 1
-    })
-}
 
 
 function updateDeity(){
