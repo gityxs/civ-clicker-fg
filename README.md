@@ -13,7 +13,7 @@ This is this version you are playing.
 
 # Authors
 
-(2012-2014) Katherine Stark
-(2015) Scott A. Colcord
-(2017) Luke Nickerson
-(2022) Frederic Deconinck
+- (2012-2014) Katherine Stark
+- (2015) Scott A. Colcord
+- (2017) Luke Nickerson
+- (2022) Frederic Deconinck
