@@ -193,11 +193,11 @@ Unit.prototype = new CivObj({
 	get party() { return isValid(this.partyObj) ? this.partyObj.owned : undefined },
 	set party(value) { if (isValid(this.partyObj)) { this.partyObj.owned = value } },
 
-	isDest: function() { return this.source !== undefined && civData[this.source].partyObj === this },
+	isDest: function() { return this.source !== undefined && curCiv[this.source].partyObj === this },
     
-	get limit() { return this.isDest() ? civData[this.source].limit : Object.getOwnPropertyDescriptor(CivObj.prototype, "limit").get.call(this) },
+	get limit() { return this.isDest() ? curCiv[this.source].limit : Object.getOwnPropertyDescriptor(CivObj.prototype, "limit").get.call(this) },
 
-	get total() { return this.isDest() ? civData[this.source].total : this.owned + (this.ill || 0) + (this.party || 0) },
+	get total() { return this.isDest() ? curCiv[this.source].total : this.owned + (this.ill || 0) + (this.party || 0) },
 
 }, true)
 

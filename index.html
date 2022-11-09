@@ -45,7 +45,7 @@
                         </div>
                         <!-- -->
                         <div class="col-auto">
-                            <span class="ff-suezOne opacity-75">CivClicker by FG</span>
+                            <span class="ff-suezOne opacity-75">CivClicker by FG (v0.013)</span>
                         </div>
                         <!-- -->
                         <div class="col-auto">
@@ -65,6 +65,10 @@
                                 <!-- -->
                                 <div class="nav-item col-auto">
                                     <a class="nav-link p-0" href="https://discord.com/channels/808751395661807616/1037677977011494923" target="_blank">Discord</a>
+                                </div>
+                                <!-- -->
+                                <div class="nav-item col-auto">
+                                    <a class="nav-link p-0" href="https://github.com/FreddecGames/civclickerbyfg" target="_blank">Github</a>
                                 </div>
                             </div>
                         </div>
@@ -825,6 +829,29 @@
                                             able to do more stuff with old deities in the future.</dd>
                                         </dl>
                                     </div>
+                                    <div class="col-12">
+                                        <h5 class="ff-suezOne">History</h5>
+                                        <dl>
+                                            <dt>What was the inspiration for CivClicker?</dt>
+                                            <dd>The game was strongly inspired by <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>.</dd>
+
+                                            <dt>Who made this wonderful game?</dt>
+                                            <dd>CivClicker was originally built by <span class="text-white">Katherine Stark</span> in 2013-14. She stated she didn't intend
+                                                to develop it further, so it was then maintained by <span class="text-white">Scott Colcord</span> for part of 2014.
+                                                Since then no new updates have been made to the <a href="https://sourceforge.net/p/civclicker/code/ci/master/tree/" target="_blank">SourceForge</a> repo,
+                                                so <span class="text-white">Luke Nickerson</span> forked it on <a href="https://github.com/deathraygames/civ-clicker" target="_blank">GitHub</a> to make some
+                                                improvements and potentially inspire others to contribute.
+                                                <br>
+                                                In 2022, <span class="text-white">Frederic Deconinck (aka Freddec)</span> made in a remake of the Luke's version on <a href="https://github.com/FreddecGames/civclickerbyfg" target="_blank">Github</a> too.
+                                                His goal is to make UI changes, and to improve the interface, styling, and fix some bugs. Please feel free to contribute by submitting improvements on his <a href="https://discord.com/channels/808751395661807616/1037677977011494923" target="_blank">Discord</a>.
+                                                This is this version you are playing.
+                                            </dd>
+                                        
+                                            <dt>Can I play my save games on later versions?</dt>
+                                            <dd>Later versions will probably have to break savegame compatibility, in order
+                                            to add new features.</dd>
+                                        </dl>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -846,7 +873,7 @@
         <script>
             function checkVersion() {
                 
-                let currentTagName = "0.012"
+                let currentTagName = "0.013"
                 ajax.get("https://api.github.com/repos/freddecgames/civclickerbyfg/releases/latest", function(responseText, response) {
                 
                     let latestTagName = response.tag_name

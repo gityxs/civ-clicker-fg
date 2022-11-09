@@ -515,8 +515,8 @@ function meetsPrereqs(prereqObj) {
 			if (getCurDeityDomain() != prereqObj[i]) { return false; }
 		} else if (i === "wonderStage") { //xxx Hack to check if we're currently building a wonder.
 			if (curCiv.curWonder.stage !== prereqObj[i]) { return false; }
-		} else if (isValid(civData[i]) && isValid(civData[i].owned)) { // Resource/Building/Upgrade
-			if (civData[i].owned < prereqObj[i]) { return false; }
+		} else if (isValid(curCiv[i]) && isValid(curCiv[i].owned)) { // Resource/Building/Upgrade
+			if (curCiv[i].owned < prereqObj[i]) { return false; }
 		}
 	}
 
@@ -581,7 +581,7 @@ function canPurchase (purchaseObj, qty) {
 
 	// If this is a relocation, can't shift more than our source pool.
 	if (purchaseObj.source) { 
-		qty = Math.min(qty, civData[purchaseObj.source].owned); 
+		qty = Math.min(qty, curCiv[purchaseObj.source].owned); 
 	}
 
 	// If this is a destination item, it's just a relocation of an existing
@@ -924,7 +924,7 @@ function raiseDead(num){
 	//Update numbers and resource levels
 	civData.piety.owned -= calcZombieCost(num);
 	curCiv.zombie.owned += num;
-	civData.unemployed.owned += num;
+	//civData.unemployed.owned += num;
 	civData.corpse.owned -= num;
 
 	//Notify player
@@ -1843,7 +1843,11 @@ function load(loadType) {
 	if (loadType === "import") {
 		loadVar = importByInput(ui.find("#impexpField"));
 	}
-
+    
+    if (!loadVar.curCiv.zombieParty) {
+        loadVar.curCiv.zombieParty = { owned:0 }
+    }
+    
     curCiv = loadVar.curCiv; // No need to merge if the versions match; this is quicker.
 
 	if (isValid(settingsVar)){ settings = mergeObj(settings,settingsVar); }
@@ -1869,8 +1873,6 @@ function load(loadType) {
 	ui.find("#clicks").innerHTML = prettify(Math.round(curCiv.resourceClicks));
 	ui.find("#civName").innerHTML = curCiv.civName;
 	ui.find("#rulerName").innerHTML = curCiv.rulerName;
-	// ui.find("#wonderNameP").innerHTML = curCiv.curWonder.name;
-	// ui.find("#wonderNameC").innerHTML = curCiv.curWonder.name;
 
 	return true;
 }
