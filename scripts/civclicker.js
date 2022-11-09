@@ -242,14 +242,14 @@ function getBasicResourceHtml(objDef) {
 	return txt
 }
 //---
-function sgnnum(x) { return (x > 0) ? 1 : (x < 0) ? -1 : 0; }
-function sgnstr(x) { return (x.length === 0) ? 0 : (x[0] == "-") ? -1 : 1; }
-function sgnbool(x) { return (x ? 1 : -1); }
-function absstr(x) { return (x.length === 0) ? "" : (x[0] == "-") ? x.slice(1) : x; }
-function sgn(x) { return (typeof x == "number") ? sgnnum(x) : (typeof x == "string") ? sgnstr(x) : (typeof x == "boolean") ? sgnbool(x) : 0; }
-function abs(x) { return (typeof x == "number") ? Math.abs(x) : (typeof x == "string") ? absstr(x) : x; }
+function sgnnum(x) { return (x > 0) ? 1 : (x < 0) ? -1 : 0 }
+function sgnstr(x) { return (x.length === 0) ? 0 : (x[0] == "-") ? -1 : 1 }
+function sgnbool(x) { return (x ? 1 : -1) }
+function absstr(x) { return (x.length === 0) ? "" : (x[0] == "-") ? x.slice(1) : x }
+function sgn(x) { return (typeof x == "number") ? sgnnum(x) : (typeof x == "string") ? sgnstr(x) : (typeof x == "boolean") ? sgnbool(x) : 0 }
+function abs(x) { return (typeof x == "number") ? Math.abs(x) : (typeof x == "string") ? absstr(x) : x }
 //---
-function htmlButtonPurchase(purchaseObj, qty) {
+function getButtonPurchaseHtml(objDef, qty) {
 
 	function sgnchr(x) { return (x > 0) ? '+' : (x < 0) ? '-' : '' }
 
@@ -258,35 +258,54 @@ function htmlButtonPurchase(purchaseObj, qty) {
 	function fmtbool(x) {
         
 		let neg = (sgn(x) < 0)
-		return (neg ? '(' : '') + purchaseObj.getQtyName(0) + (neg ? ')' : '')
+		return (neg ? '(' : '') + objDef.getQtyName(0) + (neg ? ')' : '')
 	}
     
 	function fmtqty(x) { return (typeof x == 'boolean') ? fmtbool(x) : sgnchr(sgn(x)) + infchr(abs(x)) }
     
 	function allowPurchase() {
 
-		if (purchaseObj.alignment && (purchaseObj.alignment != 'player')) { return false }
+		if (objDef.alignment && (objDef.alignment != 'player')) { return false }
 
-		if ((typeof purchaseObj.initOwned == 'boolean') && abs(qty) > 1) { return false }
+		if ((typeof objDef.initOwned == 'boolean') && abs(qty) > 1) { return false }
 
-		if (sgn(qty) > 0 && purchaseObj.require === undefined) { return false }
+		if (sgn(qty) > 0 && objDef.require === undefined) { return false }
         
-		if (sgn(qty) < 0 && !purchaseObj.salable) { return false }
+		if (sgn(qty) < 0 && !objDef.salable) { return false }
 
-		if (qty != 1 && purchaseObj.hasVariableCost()) { return false }
+		if (qty != 1 && objDef.hasVariableCost()) { return false }
 
 		return true;
 	}
     
     let txt = ''
 	if (allowPurchase()) { 
-		txt +='<button class="' + purchaseObj.type + abs(qty) + '" data-quantity="' + qty + '" data-action="purchase" disabled="disabled">' + fmtqty(qty) + '</button>'
+		txt +='<button class="' + objDef.type + abs(qty) + '" data-quantity="' + qty + '" data-action="purchase" disabled="disabled">' + fmtqty(qty) + '</button>'
 	}
     
 	return txt
 }
 //---
-function htmlTextPurchase(objDef) {
+function getUpgradeRowHtml(objDef) {
+
+	let txt = ( ''
+        + '<div id="' + objDef.id + 'Row" data-target="' + objDef.id + '" class="col-12">'
+            + '<div class="row gx-2 align-items-center" style="height:25px;">'
+                + '<div class="col-auto">'
+                    + '<div class="dropdown">'
+                        + '<a href="#" class="text-muted" data-bs-toggle="dropdown"><i class="fas fa-fw fa-info-circle"></i></a>'
+                        + '<div class="dropdown-menu" style="min-width:max-content;">' + objDef.effectText + '</div>'
+                    + '</div>'
+                + '</div>'
+                + '<div class="col">' + getButtonPurchaseHtml(objDef, true) + '</div>'
+                + '<div class="col-auto">' + getCostNote(objDef) + '</div>'
+            + '</div>'
+        + '</div>'
+    )
+	return txt
+}
+//---
+function getTextPurchaseHtml(objDef) {
 
 	let objId = objDef.id
     
@@ -311,7 +330,7 @@ function htmlTextPurchase(objDef) {
     if (isValid(objDef.require) && objDef.require != {}) {
         txt += '<div class="col-auto">'
         let tmp = [-Infinity, -100, -10, -1]
-        tmp.forEach(function(elem) { txt += htmlButtonPurchase(objDef, elem) + ' ' })
+        tmp.forEach(function(elem) { txt += getButtonPurchaseHtml(objDef, elem) + ' ' })
         txt += '</div>'
     }
     
@@ -321,7 +340,7 @@ function htmlTextPurchase(objDef) {
     if (isValid(objDef.require) && objDef.require != {}) {
         txt += '<div class="col-auto">'
         let tmp = [1, 10, 100, (objDef.salable ? Infinity : 1000)]
-        tmp.forEach(function(elem) { txt += htmlButtonPurchase(objDef, elem) + ' ' })
+        tmp.forEach(function(elem) { txt += getButtonPurchaseHtml(objDef, elem) + ' ' })
         txt += '</div>'
     }
 
@@ -331,38 +350,15 @@ function htmlTextPurchase(objDef) {
 }
 //---
 function addUITable(civObjs, groupElemName) {
-	var s="";
-	civObjs.forEach(function(elem) { 
-		s += elem.type == "resource" ? getBasicResourceHtml(elem) 
-				: elem.type == "upgrade"  ? getUpgradeRowText(elem) 
-					: htmlTextPurchase(elem); 
-	});
-	var groupElem = document.getElementById(groupElemName);
-	groupElem.innerHTML += s;
-	groupElem.onmousedown = onBulkEvent;
-	return groupElem;
-}
-function getUpgradeRowText(upgradeObj, inTable)
-{
-	if (inTable === undefined) { inTable = true; }
-	var cellTagName = inTable ? "td" : "span";
-	var rowTagName = inTable ? "tr" : "span";
-	// Make sure to update this if the number of columns changes.
-	if (!upgradeObj) { return inTable ? "<"+rowTagName+" class='purchaseRow'><td colspan='2'/>&nbsp;</"+rowTagName+">" : ""; }
-
-	var s=  '<div id="'+upgradeObj.id+'Row" data-target="' +upgradeObj.id + '" class="col-12"><div class="row gx-2 align-items-center" style="height:25px;">'
-    s += ( ''
-        + '<div class="col-auto">'
-            + '<div class="dropdown">'
-                + '<a href="#" class="text-muted" data-bs-toggle="dropdown"><i class="fas fa-fw fa-info-circle"></i></a>'
-                + '<div class="dropdown-menu" style="min-width:max-content;">' + upgradeObj.effectText + '</div>'
-            + '</div>'
-        + '</div>'
-    )
-	s +=    "<div class='col'>" + htmlButtonPurchase(upgradeObj, true) + "</div>";
-	s +=    "<div class='col-auto'>" + getCostNote(upgradeObj) + "</div>";
-	s +=    "</div></div>";
-	return s;
+    
+	let html = ''
+	civObjs.forEach(elem => { 
+		html += elem.type == "resource" ? getBasicResourceHtml(elem) : elem.type == "upgrade"  ? getUpgradeRowHtml(elem) : getTextPurchaseHtml(elem)
+	})
+    
+	var groupElem = document.getElementById(groupElemName)
+	groupElem.innerHTML += html
+	groupElem.onmousedown = onBulkEvent
 }
 
 function getPantheonUpgradeRowText(upgradeObj)
@@ -415,7 +411,7 @@ function addUpgradeRows()
 		else { // One of the 'atypical' upgrades not displayed in the main upgrade list.
 			var stubElem = document.getElementById(elem.id+"Row");
 			if (!stubElem) { console.log("Missing UI element for "+elem.id); return; }
-			stubElem.outerHTML = getUpgradeRowText(elem, false); // Replaces stubElem
+			stubElem.outerHTML = getUpgradeRowHtml(elem); // Replaces stubElem
 			stubElem = document.getElementById(elem.id+"Row"); // Get stubElem again.
 			stubElem.onmousedown=onBulkEvent;
 		}

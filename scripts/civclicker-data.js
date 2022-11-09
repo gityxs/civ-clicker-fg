@@ -775,7 +775,7 @@ function getCivData() {
             prereqs:{ standard:true, barracks:1 },
             effectText:"Your raiding party",
         }),
-        new Unit({ id:"zombieParty",
+        new Unit({ id:"zombieParty", species:"undead",
             singular:"zombie", plural:"zombies",
             source:"zombie",
             combatType:"infantry", place:"party",
