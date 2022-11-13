@@ -1994,6 +1994,7 @@ function getRandomHealthyWorker() {
     
 	let num = Math.random() * population.healthy
     
+    let chance = 0
 	for (let i = 0; i < killable.length; ++i) {
         
 		chance += civData[killable[i].id].owned
