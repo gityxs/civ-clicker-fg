@@ -411,7 +411,7 @@ function invade(control) {
     
 	curCiv.raid.raiding = true
 	curCiv.raid.last = ecivtype
-
+    
 	curCiv.raid.epop = civSizes[ecivtype].max_pop + 1
 	if (curCiv.raid.epop === Infinity ) { curCiv.raid.epop = civSizes[ecivtype].min_pop * 2 }
 	if (civData.glory.timer > 0) { curCiv.raid.epop *= 2 }
@@ -427,7 +427,8 @@ function invade(control) {
 	ui.show("#raidNews", false)
     
 	updateTargets()
-	updatePartyButtons()
+    
+	armyUnits.forEach(elem => { updatePurchaseRow(elem) })
 }
 
 function plunder() {
@@ -893,9 +894,11 @@ function addUITable(civObjs, groupElemName) {
 function onBulkEvent(e) {
 	switch (dataset(e.target, "action")) {
         
-		case "increment": increment(e.target)
-		case "purchase": purchase(e.target)
-		case "raid": invade(e.target)
+		case "increment": increment(e.target); break;
+		case "purchase": purchase(e.target); break;
+		case "raid": invade(e.target); break;
+        
+        default: break;
 	}
 }
 
@@ -1117,6 +1120,11 @@ function load(loadType) {
     if (!loadVar.curCiv.zombieParty) { loadVar.curCiv.zombieParty = { owned:0 } }
     
     curCiv = loadVar.curCiv
+    
+	if (!civSizes[curCiv.raid.last]) {
+		curCiv.raid.last = civSizes[curCiv.raid.targetMax].idx
+	}
+    
 
 	if (isValid(settingsVar)){ settings = mergeObj(settings,settingsVar) }
  

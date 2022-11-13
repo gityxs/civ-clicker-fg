@@ -88,7 +88,7 @@ function updatePurchaseRow(purchaseObj) {
         console.warn("Missing UI element for " + purchaseObj.id)
         return
     }
-
+    
 	if (purchaseObj.hasVariableCost()) { updateRequirements(purchaseObj) }
 
 	let maxQty = canPurchase(purchaseObj)
@@ -217,6 +217,10 @@ function updateDevotion() {
             if (elem.id == "raiseDead") { return }
             ui.show(("#" + elem.id + "Row"), meetsPrereqs(elem.prereqs))
             document.getElementById(elem.id).disabled = !(meetsPrereqs(elem.prereqs) && canAfford(elem.require))
+            
+            console.log(elem.id)
+            console.log(meetsPrereqs(elem.prereqs))
+            console.log(canAfford(elem.require))
         }
     })
 
