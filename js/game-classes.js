@@ -3,7 +3,7 @@ function CivObj(props, asProto) {
     
 	if (!(this instanceof CivObj)) { return new CivObj(props) }
     
-	var names = asProto ? null : [
+	let names = asProto ? null : [
 		"id", "name", "subType", "owned", "prereqs", "require", "salable", "vulnerable",
         "effectText" ,"prestige", "initOwned", "init", "reset", "limit", "hasVariableCost",
 	]
@@ -42,11 +42,11 @@ CivObj.prototype = {
 	},
 	reset: function() { return this.init(false) },
     
-	get limit() { return (typeof this.initOwned == "number" ) ? Infinity : (typeof this.initOwned == "boolean") ? true : 0; },
+	get limit() { return (typeof this.initOwned == "number" ) ? Infinity : (typeof this.initOwned == "boolean") ? true : 0 },
 
 	hasVariableCost: function() { 
 
-		var requireDesc = Object.getOwnPropertyDescriptor(this, "require")
+		let requireDesc = Object.getOwnPropertyDescriptor(this, "require")
 		if (!requireDesc) { return false }
 		if (requireDesc.get !== undefined) { return true }
 
@@ -92,7 +92,7 @@ Resource.prototype = new CivObj({
         
 		return this.data.net
 	},    
-	set net(value) { this.data.net = value; },
+	set net(value) { this.data.net = value },
     
 }, true)
 
@@ -182,7 +182,7 @@ Unit.prototype = new CivObj({
 		return true
 	},
 
-	get illObj() { return curCiv[this.id + "Ill"]; },
+	get illObj() { return curCiv[this.id + "Ill"] },
 	set illObj(value) { curCiv[this.id + "Ill"] = value },
     
 	get ill() { return isValid(this.illObj) ? this.illObj.owned : undefined },

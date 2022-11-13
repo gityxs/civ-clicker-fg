@@ -10,20 +10,20 @@
         <!-- -->
         <link rel="icon" href="logo.png">
         <!-- -->
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
-        <link rel="stylesheet" type="text/css" href="styles/civclicker.css" />
+        <link rel="stylesheet" type="text/css" href="css/vendor-bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/game-styles.css" />
         <!-- -->
-        <script src="scripts/lz-string.js"></script>
-        <script src="scripts/eec3c710b7.js"></script>
+        <script src="js/vendor-lz-string.js"></script>
+        <script src="js/vendor-fontawesome.js"></script>
         <!-- -->
-        <script src="scripts/util-js.js"></script>
-        <script src="scripts/util-ajax.js"></script>
-        <script src="scripts/util-ui.js"></script>
+        <script src="js/util-js.js"></script>
+        <script src="js/util-ajax.js"></script>
+        <script src="js/util-ui.js"></script>
         <!-- -->
-        <script src="scripts/civclicker-classes.js" defer="defer"></script>
-        <script src="scripts/civclicker-data.js" defer="defer"></script>
-        <script src="scripts/civclicker-update.js" defer="defer"></script>
-        <script src="scripts/civclicker.js" defer="defer"></script>
+        <script src="js/game-classes.js" defer="defer"></script>
+        <script src="js/game-data.js" defer="defer"></script>
+        <script src="js/game-update.js" defer="defer"></script>
+        <script src="js/game-core.js" defer="defer"></script>
     </head>
     <body>
         <!-- -->
@@ -43,7 +43,7 @@
                         </div>
                         <!-- -->
                         <div class="col-auto">
-                            <span class="ff-suezOne">v0.015</span>
+                            <span class="ff-suezOne">v0.016</span>
                         </div>
                         <!-- -->
                         <div id="newRelease" class="col-auto" style="display:none;">
@@ -100,7 +100,7 @@
                                             <!-- -->
                                             <div class="col-12">
                                                 <div class="row gx-2 align-items-center" style="height:30px;">
-                                                    <div class="col-auto"><img src="images/smitten.png" class="icon-lg" alt="Happiness" data-bs-toggle="tooltip" data-bs-title="Happiness" /></div>
+                                                    <div class="col-auto"><img src="img/smitten.png" class="icon-lg" alt="Happiness" data-bs-toggle="tooltip" data-bs-title="Happiness" /></div>
                                                     <div class="col"><span>Happiness</span></div>
                                                     <div class="col-auto">
                                                         <div id="morale" class="row gx-1">
@@ -134,7 +134,7 @@
                                                         <div class="row gx-2 align-items-center" style="height:25px;">
                                                             <div class="col-auto"><span>New Worker</span></div>
                                                             <div class="col text-end">
-                                                                <img src="images/food.png" class="icon-sm" alt="Food" data-bs-toggle="tooltip" data-bs-title="Food" />
+                                                                <img src="img/food.png" class="icon-sm" alt="Food" data-bs-toggle="tooltip" data-bs-title="Food" />
                                                                 <span id="workerCost"></span>
                                                             </div>
                                                             <div class="col-auto">
@@ -194,7 +194,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="skins" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/skins.png" class="icon-lg" alt="Skins" data-bs-toggle="tooltip" data-bs-title="Skins" /></div>
+                                                            <div class="col-auto"><img src="img/skins.png" class="icon-lg" alt="Skins" data-bs-toggle="tooltip" data-bs-title="Skins" /></div>
                                                             <div class="col"><span>Skins</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>
@@ -203,7 +203,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="herbs" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/herbs.png" class="icon-lg" alt="Herbs" data-bs-toggle="tooltip" data-bs-title="Herbs" /></div>
+                                                            <div class="col-auto"><img src="img/herbs.png" class="icon-lg" alt="Herbs" data-bs-toggle="tooltip" data-bs-title="Herbs" /></div>
                                                             <div class="col"><span>Herbs</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>
@@ -212,7 +212,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="ore" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/ore.png" class="icon-lg" alt="Ore" data-bs-toggle="tooltip" data-bs-title="Ore" /></div>
+                                                            <div class="col-auto"><img src="img/ore.png" class="icon-lg" alt="Ore" data-bs-toggle="tooltip" data-bs-title="Ore" /></div>
                                                             <div class="col"><span>Ore</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>
@@ -221,7 +221,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="gold" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/gold.png" class="icon-lg" alt="Gold" data-bs-toggle="tooltip" data-bs-title="Gold" /></div>
+                                                            <div class="col-auto"><img src="img/gold.png" class="icon-lg" alt="Gold" data-bs-toggle="tooltip" data-bs-title="Gold" /></div>
                                                             <div class="col"><span>Gold</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto" style="width:80px;"></div>
@@ -235,7 +235,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="leather" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/leather.png" class="icon-lg" alt="Leather" data-bs-toggle="tooltip" data-bs-title="Leather" /></div>
+                                                            <div class="col-auto"><img src="img/leather.png" class="icon-lg" alt="Leather" data-bs-toggle="tooltip" data-bs-title="Leather" /></div>
                                                             <div class="col"><span>Leather</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>
@@ -244,7 +244,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="piety" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/piety.png" class="icon-lg" alt="Piety" data-bs-toggle="tooltip" data-bs-title="Piety" /></div>
+                                                            <div class="col-auto"><img src="img/piety.png" class="icon-lg" alt="Piety" data-bs-toggle="tooltip" data-bs-title="Piety" /></div>
                                                             <div class="col"><span>Piety</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>
@@ -253,7 +253,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="metal" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/metal.png" class="icon-lg" alt="Metal" data-bs-toggle="tooltip" data-bs-title="Metal" /></div>
+                                                            <div class="col-auto"><img src="img/metal.png" class="icon-lg" alt="Metal" data-bs-toggle="tooltip" data-bs-title="Metal" /></div>
                                                             <div class="col"><span>Metal</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto text-end" style="width:80px;"><span data-action="displayNet"></span></div>
@@ -262,7 +262,7 @@
                                                     <!-- -->
                                                     <div class="col-12">
                                                         <div data-target="corpse" class="row gx-2 align-items-center" style="height:30px;">
-                                                            <div class="col-auto"><img src="images/corpse.png" class="icon-lg" alt="Corpse" data-bs-toggle="tooltip" data-bs-title="Corpse" /></div>
+                                                            <div class="col-auto"><img src="img/corpse.png" class="icon-lg" alt="Corpse" data-bs-toggle="tooltip" data-bs-title="Corpse" /></div>
                                                             <div class="col"><span>corpse</span></div>
                                                             <div class="col-auto"><span data-action="display"></span></div>
                                                             <div class="col-auto" style="width:80px;"></div>
@@ -321,16 +321,16 @@
                                                             </div>
                                                         </div>
                                                         <!-- -->
+                                                        <div class="col-12">
+                                                            <div id="buildings" class="row g-1">
+                                                                <!-- populated by javascript -->
+                                                            </div>
+                                                        </div>
+                                                        <!-- -->
                                                         <div id="graveTotal" class="col-12" style="display: none;">
                                                             <div class="row gx-2 align-items-center" style="height:25px;">
                                                                 <div class="col">Unfilled Graves</div>
                                                                 <div class="col-auto"><span data-action="display" data-target="grave"></span></div>
-                                                            </div>
-                                                        </div>
-                                                        <!-- -->
-                                                        <div class="col-12">
-                                                            <div id="buildings" class="row g-1">
-                                                                <!-- populated by javascript -->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -380,7 +380,7 @@
                                                                             <div class="row gx-2 align-items-center" style="height:25px;">
                                                                                 <div class="col-auto"><div class="dropdown"><a href="#" class="text-muted" data-bs-toggle="dropdown"><i class="fas fa-fw fa-info-circle" aria-hidden="true"></i></a><div class="dropdown-menu" style="min-width:max-content;">Increase wonder progress</div></div></div>
                                                                                 <div class="col"><button id="speedWonder" onmousedown="speedWonder()">Speed Wonder</button></div>
-                                                                                <div class="col-auto"><img src="images/gold.png" class="icon-sm" alt="gold" data-bs-toggle="tooltip" data-bs-title="Gold" /> 100</div>
+                                                                                <div class="col-auto"><img src="img/gold.png" class="icon-sm" alt="gold" data-bs-toggle="tooltip" data-bs-title="Gold" /> 100</div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -471,7 +471,7 @@
                                                                                 <div class="col upgradetrue" data-quantity="true">
                                                                                     <button id="battleDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('battle')">Battle</button>
                                                                                 </div>
-                                                                                <div class="col-auto"><img src="images/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
+                                                                                <div class="col-auto"><img src="img/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
                                                                             </div>
                                                                         </div>
                                                                         <!-- -->
@@ -480,7 +480,7 @@
                                                                                 <div class="col upgradetrue" data-quantity="true">
                                                                                     <button id="fieldsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('fields')">Fields</button>
                                                                                 </div>
-                                                                                <div class="col-auto"><img src="images/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
+                                                                                <div class="col-auto"><img src="img/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
                                                                             </div>		
                                                                         </div>
                                                                         <!-- -->
@@ -489,7 +489,7 @@
                                                                                 <div class="col upgradetrue" data-quantity="true">
                                                                                     <button id="underworldDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('underworld')">Underworld</button>
                                                                                 </div>
-                                                                                <div class="col-auto"><img src="images/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
+                                                                                <div class="col-auto"><img src="img/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
                                                                             </div>
                                                                         </div>
                                                                         <!-- -->
@@ -498,7 +498,7 @@
                                                                                 <div class="col upgradetrue" data-quantity="true">
                                                                                     <button id="catsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('cats')">Cats</button>
                                                                                 </div>
-                                                                                <div class="col-auto"><img src="images/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
+                                                                                <div class="col-auto"><img src="img/piety.png" class="icon-sm" alt="piety" data-bs-toggle="tooltip" data-bs-title="Piety" /> <span id="battleCost" class="cost">500</span></div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -566,7 +566,7 @@
                                                                     <div class="row gx-2 align-items-center">
                                                                         <div class="col-auto"><div class="dropdown"><a href="#" class="text-muted" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-fw fa-info-circle" aria-hidden="true"></i></a><div class="dropdown-menu" style="min-width: max-content;">Remove an old deity to gain gold</div></div></div>
                                                                         <div class="col"><button id="iconoclasm" onmousedown="iconoclasmList()">Iconoclasm</button></div>
-                                                                        <div class="col-auto"><img src="images/gold.png" class="icon-sm" alt="gold" data-bs-toggle="tooltip" data-bs-title="Gold" /> 1 000</div>
+                                                                        <div class="col-auto"><img src="img/gold.png" class="icon-sm" alt="gold" data-bs-toggle="tooltip" data-bs-title="Gold" /> 1 000</div>
                                                                     </div>
                                                                 </div>
                                                                 <!-- -->
@@ -664,7 +664,7 @@
                                                                 </div>
                                                                 <!-- -->
                                                                 <div class="col-12">
-                                                                    <h6 class="ff-suezOne">Buy Resources for <img src="images/gold.png" class="icon-sm" alt="gold" data-bs-toggle="tooltip" data-bs-title="Gold" /> 1</h6>
+                                                                    <h6 class="ff-suezOne">Buy Resources for <img src="img/gold.png" class="icon-sm" alt="gold" data-bs-toggle="tooltip" data-bs-title="Gold" /> 1</h6>
                                                                     <div class="row g-1">
                                                                         <div class="col-3"><button class="w-100 tradeResource" style="min-width:auto;" onmousedown="buy('food')">5000 Food</button></div>
                                                                         <div class="col-3"><button class="w-100 tradeResource" style="min-width:auto;" onmousedown="buy('wood')">5000 Wood</button></div>
@@ -748,7 +748,7 @@
                                         <h5 class="ff-suezOne">Resetting</h5>
                                         <div class="row g-1 align-items-center">
                                             <div class="col-8">Resetting allows you to gain another <strong>Deity</strong> and build another <strong>Wonder</strong></div>
-                                            <div class="col-4"><button class="w-100" onmousedown="reset()" title="Reset your game">Reset Game</button></div>
+                                            <div class="col-4"><button class="w-100" onmousedown="onReset()" title="Reset your game">Reset Game</button></div>
                                         </div>
                                     </div>
                                 </div>
@@ -864,7 +864,7 @@
             </div>
         </div>
         <!-- -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <script src="js/vendor-bootstrap.bundle.min.js"></script>
         <!-- -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-L7KZTWGS9B"></script>
         <script>
@@ -877,7 +877,7 @@
         <script>
             function checkVersion() {
                 
-                let currentTagName = "0.015"
+                let currentTagName = "0.016"
                 ajax.get("https://api.github.com/repos/freddecgames/civclickerbyfg/releases/latest", function(responseText, response) {
                 
                     let latestTagName = response.tag_name
