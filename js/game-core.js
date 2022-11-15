@@ -78,7 +78,7 @@ function onToggleAutosave(control) { return setAutosave(control.checked) }
 
 function onReset() {
 
-	let msg = "Really reset? You will keep past deities and wonders (and cats)"
+	let msg = "真的重置了吗？ 您将保留过去的神灵和奇迹（和猫）"
 	if (!confirm(msg)) { return false }
 
 	civData.forEach(elem => { if (elem instanceof CivObj) { elem.reset() } })
@@ -113,13 +113,13 @@ function renameDeity(newName) {
     let i = false
 	while (!newName) {
 
-		newName = prompt("Whom do your people worship?", (newName || curCiv.deities[0].name || curCiv.rulerName))
+		newName = prompt("你的人民崇拜谁？", (newName || curCiv.deities[0].name || curCiv.rulerName))
 		if (newName === null && curCiv.deities[0].name) { return }
 
 		i = haveDeity(newName)
 		if (i && curCiv.deities[0].name) {
             
-			alert("That deity already exists.")
+			alert("那个神已经存在.")
 			newName = ""
 		}
 	}
@@ -142,12 +142,12 @@ function renameRuler(newName) {
 
 	while (!newName || haveDeity(newName) !== false) {
         
-		newName = prompt("What is your name?", (newName || curCiv.rulerName || "Freddec"))
+		newName = prompt("你叫什么名字?", (newName || curCiv.rulerName || "锅巴汉化"))
 		if (newName === null && curCiv.rulerName) { return }
         
 		if (haveDeity(newName) !== false) {
             
-			alert("That would be a blasphemy against the deity " + newName + ".");
+			alert("那将是对神明的亵渎 " + newName + ".");
 			newName = ""
 		}
 	}
@@ -161,7 +161,7 @@ function renameCiv(newName) {
 
 	while (!newName) {
         
-		newName = prompt("Please name your civilization", (newName || curCiv.civName || "Freddec Games"))
+		newName = prompt("请命名你的文明", (newName || curCiv.civName || "Git游戏"))
 		if (newName === null && curCiv.civName) { return }
 	}
 
@@ -171,14 +171,14 @@ function renameCiv(newName) {
 
 function deleteSave() {
 
-	if (!confirm("All progress and achievements will be lost.\nReally delete save?")) { return }
+	if (!confirm("所有进度和成就都会丢失。\n真的要删除存档吗？")) { return }
 
     localStorage.removeItem(saveTag)
     localStorage.removeItem(saveSettingsTag)
     
     gameLog("Save Deleted")
     
-    if (confirm("Save Deleted. Refresh page to start over?")) { window.location.reload() }
+    if (confirm("保存已删除。 刷新页面重新开始？")) { window.location.reload() }
 }
 
 function importByInput(elt) {
