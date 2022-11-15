@@ -733,7 +733,7 @@ var cnRegReplace = new Map([
     [/^\+([\d\.,]+) max Worker$/, '\+$1 工人上限'],
     [/^\+([\d\.,]+) Wood storage$/, '\+$1 木头存储上限'],
     [/^\+([\d\.,]+) Stone storage$/, '\+$1 石头存储上限'],
-    [/^\+([\d\.,]+) Food storage$/, '\+$1 石头存储上限'],
+    [/^\+([\d\.,]+) Food storage$/, '\+$1 食物存储上限'],
     [/^\*(.+) to electricity gain$/, '\*$1 到电力增益'],
     [/^Cost: (.+) points$/, '成本：$1 点数'],
     [/^Req: (.+) elves$/, '要求：$1 精灵'],
