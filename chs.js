@@ -145,7 +145,7 @@ var cnItems = {
     "Farmers can collect Skins": "农民可以收集皮肤",
     "Fertilisers": "肥料",
     "Feudalism": "封建",
-    "Fields": "字段",
+    "Fields": "田地",
     "Finding out is part of the fun!": "发现是乐趣的一部分！",
     "Flensing": "弗伦辛",
     "Food": "食物",
