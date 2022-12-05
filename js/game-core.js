@@ -765,7 +765,7 @@ function getBasicResourceHtml(objDef) {
                 + '<div class="col"><span class="text-capitalize">' + objName + '</span></div>'
                 + '<div class="col-auto"><span data-action="display"></span></div>'
                 + '<div class="col-auto"><small id="max' + objId + '" class="opacity-50"></small></div>'
-                + '<div class="col-auto text-end" style="width:85px;"><span data-action="displayNet"></span></div>'
+                + '<div class="col-auto text-end" style="width:100px;"><span data-action="displayNet"></span></div>'
             + '</div>'
 		+ '</div>'
 	)
@@ -865,7 +865,7 @@ function getTextPurchaseHtml(objDef) {
     }
     
 	let action = isValid(population[objId]) ? 'display_pop' : 'display'
-	txt += '<div class="col-auto text-end" style="width:50px;"><span data-action="' + action + '"></span></div>'
+	txt += '<div class="col-auto text-end" style="width:85px;"><span data-action="' + action + '"></span></div>'
 
     if (isValid(objDef.require) && objDef.require != {}) {
         txt += '<div class="col-auto">'
