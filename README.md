@@ -8,7 +8,7 @@ so Luke Nickerson forked it on <a href="https://github.com/deathraygames/civ-cli
 improvements and potentially inspire others to contribute.
                                                 
 In 2022, Frederic Deconinck (aka Freddec) made in a remake of the Luke's version on <a href="https://github.com/FreddecGames/civclickerbyfg" target="_blank">Github</a> too.
-His goal is to make UI changes, and to improve the interface, styling, and fix some bugs. Please feel free to contribute by submitting improvements on his <a href="https://discord.com/channels/808751395661807616/1037677977011494923" target="_blank">Discord</a>.
+His goal is to make UI changes, and to improve the interface, styling, and fix some bugs. Please feel free to contribute by submitting improvements on his <a href="https://discord.gg/cMSCRs8yGP" target="_blank">Discord</a>.
 This is this version you are playing.
 
 # Authors
